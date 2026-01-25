@@ -12,9 +12,9 @@ import Results from './pages/Results';
 import Team from './pages/Team';
 import Contact from './pages/Contact';
 import Auth from './pages/Auth';
-import './styles/App.css';
+import './styles/index.css';
 
-function App() {
+const App: React.FC = () => {
   return (
     <div className="App">
       <Navbar />
@@ -35,6 +35,6 @@ function App() {
       <Footer />
     </div>
   );
-}
+};
 
 export default App;
