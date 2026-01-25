@@ -1,11 +1,19 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FaEnvelope, FaLock, FaUser, FaEye, FaEyeSlash, FaGoogle, FaFacebook } from 'react-icons/fa';
+import SuccessModal from '../components/SuccessModal';
 import './Auth.css';
 
+const API_BASE_URL = 'http://localhost:5000/api';
+
 const Auth = () => {
+  const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [serverError, setServerError] = useState('');
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -53,12 +61,70 @@ const Auth = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      // Handle form submission
-      console.log('Form submitted:', formData);
-      alert(isLogin ? 'Login successful!' : 'Registration successful!');
+    setServerError('');
+    
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const endpoint = isLogin ? '/auth/login' : '/auth/register';
+      const payload = isLogin
+        ? { email: formData.email, password: formData.password }
+        : { name: formData.name, email: formData.email, password: formData.password };
+
+      const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Something went wrong');
+      }
+
+      // Store token in localStorage
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('user', JSON.stringify(data.user));
+      }
+
+      // Reset form
+      setFormData({ name: '', email: '', password: '', confirmPassword: '' });
+      setErrors({});
+
+      if (isLogin) {
+        // For login, show simple alert and redirect
+        alert('Login successful! Welcome back!');
+        setTimeout(() => {
+          navigate('/');
+          window.location.reload();
+        }, 500);
+      } else {
+        // For registration, show success modal with congratulations
+        setSuccessMessage(`Congratulations ${data.user.name}! Your account has been created successfully. You are now logged in.`);
+        setShowSuccessModal(true);
+        
+        // Auto-redirect to profile after 3 seconds
+        setTimeout(() => {
+          setShowSuccessModal(false);
+          navigate('/profile');
+          window.location.reload();
+        }, 3000);
+      }
+    } catch (error) {
+      console.error('Auth error:', error);
+      setServerError(error.message || 'An error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -187,8 +253,25 @@ const Auth = () => {
               </div>
             )}
 
-            <button type="submit" className="btn btn-primary submit-btn">
-              {isLogin ? 'Sign In' : 'Create Account'}
+            {serverError && (
+              <div className="server-error" style={{ 
+                color: '#e74c3c', 
+                marginBottom: '1rem', 
+                padding: '0.75rem', 
+                backgroundColor: '#fee', 
+                borderRadius: '4px',
+                fontSize: '0.9rem'
+              }}>
+                {serverError}
+              </div>
+            )}
+
+            <button 
+              type="submit" 
+              className="btn btn-primary submit-btn"
+              disabled={isLoading}
+            >
+              {isLoading ? (isLogin ? 'Signing In...' : 'Creating Account...') : (isLogin ? 'Sign In' : 'Create Account')}
             </button>
           </form>
 
@@ -213,6 +296,17 @@ const Auth = () => {
           </p>
         </div>
       </div>
+
+      <SuccessModal
+        isOpen={showSuccessModal}
+        onClose={() => {
+          setShowSuccessModal(false);
+          navigate('/profile');
+          window.location.reload();
+        }}
+        title="🎉 Account Created Successfully!"
+        message={successMessage}
+      />
     </div>
   );
 };

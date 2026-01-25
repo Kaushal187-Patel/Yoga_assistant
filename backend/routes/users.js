@@ -1,39 +1,59 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/auth');
+const { pool } = require('../config/database');
 
 // Get user profile
-router.get('/profile', authMiddleware, (req, res) => {
+router.get('/profile', authMiddleware, async (req, res) => {
   try {
-    // In production, fetch from database
+    const result = await pool.query(
+      'SELECT id, name, email, created_at, avatar_url, role FROM users WHERE id = $1',
+      [req.userId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    const user = result.rows[0];
     res.json({
-      id: req.userId,
-      name: 'John Doe',
-      email: 'john@example.com',
-      createdAt: new Date(),
-      stats: {
-        totalSessions: 25,
-        totalPoses: 150,
-        averageAccuracy: 87.5,
-        streak: 7
-      }
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      createdAt: user.created_at,
+      avatar_url: user.avatar_url,
+      role: user.role
     });
   } catch (error) {
+    console.error('Get profile error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
 
 // Update user profile
-router.put('/profile', authMiddleware, (req, res) => {
+router.put('/profile', authMiddleware, async (req, res) => {
   try {
-    const { name, email } = req.body;
+    const { name } = req.body;
     
-    // In production, update in database
+    if (!name || !name.trim()) {
+      return res.status(400).json({ error: 'Name is required' });
+    }
+
+    const result = await pool.query(
+      'UPDATE users SET name = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING id, name, email, created_at',
+      [name.trim(), req.userId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
     res.json({
       message: 'Profile updated successfully',
-      user: { name, email }
+      user: result.rows[0]
     });
   } catch (error) {
+    console.error('Update profile error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });

@@ -1,25 +1,27 @@
-const mysql = require('mysql2/promise');
+const { Pool } = require('pg');
 
-// Database configuration
-const dbConfig = {
-  host: process.env.DB_HOST || 'localhost',
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'yoga_guru',
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-};
+// Database configuration using DATABASE_URL
+if (!process.env.DATABASE_URL) {
+  console.error('DATABASE_URL is not set in environment variables!');
+}
 
-// Create connection pool
-const pool = mysql.createPool(dbConfig);
+// The pg library should handle URL-encoded passwords in connection strings
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+});
+
+// Handle connection errors
+pool.on('error', (err) => {
+  console.error('Unexpected error on idle client', err);
+  process.exit(-1);
+});
 
 // Test database connection
 const testConnection = async () => {
   try {
-    const connection = await pool.getConnection();
-    console.log('Database connected successfully');
-    connection.release();
+    const result = await pool.query('SELECT NOW()');
+    console.log('Database connected successfully at', result.rows[0].now);
   } catch (error) {
     console.error('Database connection failed:', error.message);
   }

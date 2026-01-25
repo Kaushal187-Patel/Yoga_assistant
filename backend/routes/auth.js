@@ -2,12 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-
-// In production, use database connection
-// const db = require('../config/database');
-
-// Sample user data (replace with database in production)
-let users = [];
+const { pool } = require('../config/database');
 
 // Register new user
 router.post('/register', async (req, res) => {
@@ -20,8 +15,12 @@ router.post('/register', async (req, res) => {
     }
 
     // Check if user exists
-    const existingUser = users.find(u => u.email === email);
-    if (existingUser) {
+    const existingUser = await pool.query(
+      'SELECT id, email FROM users WHERE email = $1',
+      [email]
+    );
+
+    if (existingUser.rows.length > 0) {
       return res.status(400).json({ error: 'User already exists' });
     }
 
@@ -29,16 +28,13 @@ router.post('/register', async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create user
-    const newUser = {
-      id: users.length + 1,
-      name,
-      email,
-      password: hashedPassword,
-      createdAt: new Date()
-    };
+    // Create user in database
+    const result = await pool.query(
+      'INSERT INTO users (name, email, password) VALUES ($1, $2, $3) RETURNING id, name, email, created_at',
+      [name, email, hashedPassword]
+    );
 
-    users.push(newUser);
+    const newUser = result.rows[0];
 
     // Generate JWT token
     const token = jwt.sign(
@@ -57,6 +53,7 @@ router.post('/register', async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('Registration error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -71,17 +68,29 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ error: 'Email and password are required' });
     }
 
-    // Find user
-    const user = users.find(u => u.email === email);
-    if (!user) {
+    // Find user in database
+    const result = await pool.query(
+      'SELECT id, name, email, password FROM users WHERE email = $1',
+      [email]
+    );
+
+    if (result.rows.length === 0) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
+
+    const user = result.rows[0];
 
     // Check password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
+
+    // Update last_login timestamp
+    await pool.query(
+      'UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = $1',
+      [user.id]
+    );
 
     // Generate JWT token
     const token = jwt.sign(
@@ -100,6 +109,7 @@ router.post('/login', async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('Login error:', error);
     res.status(500).json({ error: 'Server error' });
   }
 });

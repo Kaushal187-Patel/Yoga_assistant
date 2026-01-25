@@ -12,6 +12,7 @@ import Results from './pages/Results';
 import Team from './pages/Team';
 import Contact from './pages/Contact';
 import Auth from './pages/Auth';
+import Profile from './pages/Profile';
 import './styles/index.css';
 
 const App: React.FC = () => {
@@ -30,6 +31,7 @@ const App: React.FC = () => {
           <Route path="/team" element={<Team />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Auth />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </main>
       <Footer />

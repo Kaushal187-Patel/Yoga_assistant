@@ -2,14 +2,17 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 
+// Load environment variables FIRST, before requiring database
+dotenv.config();
+
+// Now import database (after env vars are loaded)
+const { testConnection } = require('./config/database');
+
 // Import routes
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const poseRoutes = require('./routes/poses');
 const contactRoutes = require('./routes/contact');
-
-// Load environment variables
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -37,6 +40,8 @@ app.use((err, req, res, next) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`Server is running on port ${PORT}`);
+  // Test database connection
+  await testConnection();
 });

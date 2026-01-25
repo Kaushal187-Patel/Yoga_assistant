@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { FaBars, FaTimes, FaGithub, FaLinkedin, FaInstagram, FaWhatsapp } from 'react-icons/fa';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { FaBars, FaTimes, FaGithub, FaLinkedin, FaInstagram, FaWhatsapp, FaUser, FaSignOutAlt } from 'react-icons/fa';
 import './Navbar.css';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,6 +22,25 @@ const Navbar = () => {
 
   useEffect(() => {
     setIsOpen(false);
+  }, [location]);
+
+  useEffect(() => {
+    // Check if user is logged in
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
+    
+    if (token && userData) {
+      try {
+        setUser(JSON.parse(userData));
+        setIsLoggedIn(true);
+      } catch (error) {
+        console.error('Error parsing user data:', error);
+        setIsLoggedIn(false);
+      }
+    } else {
+      setIsLoggedIn(false);
+      setUser(null);
+    }
   }, [location]);
 
   const navLinks = [
@@ -77,9 +99,30 @@ const Navbar = () => {
         </div>
 
         <div className="navbar-actions">
-          <Link to="/login" className="btn btn-secondary">
-            Login
-          </Link>
+          {isLoggedIn ? (
+            <>
+              <Link to="/profile" className="btn btn-profile">
+                <FaUser /> {user?.name || 'Profile'}
+              </Link>
+              <button
+                className="btn btn-logout-nav"
+                onClick={() => {
+                  localStorage.removeItem('token');
+                  localStorage.removeItem('user');
+                  setIsLoggedIn(false);
+                  setUser(null);
+                  navigate('/');
+                  window.location.reload();
+                }}
+              >
+                <FaSignOutAlt /> Logout
+              </button>
+            </>
+          ) : (
+            <Link to="/login" className="btn btn-secondary">
+              Login
+            </Link>
+          )}
           <button
             className="navbar-toggle"
             onClick={() => setIsOpen(!isOpen)}
