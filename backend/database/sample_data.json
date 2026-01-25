@@ -1,0 +1,141 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john@example.com",
+      "role": "user",
+      "createdAt": "2024-01-01T10:00:00Z"
+    },
+    {
+      "id": 2,
+      "name": "Jane Smith",
+      "email": "jane@example.com",
+      "role": "user",
+      "createdAt": "2024-01-05T15:30:00Z"
+    },
+    {
+      "id": 3,
+      "name": "Admin User",
+      "email": "admin@yogaguru.com",
+      "role": "admin",
+      "createdAt": "2023-12-01T09:00:00Z"
+    }
+  ],
+  "practiceSessions": [
+    {
+      "id": 1,
+      "userId": 1,
+      "startTime": "2024-01-20T08:00:00Z",
+      "endTime": "2024-01-20T08:30:00Z",
+      "durationMinutes": 30,
+      "totalPoses": 8,
+      "averageAccuracy": 85.5
+    },
+    {
+      "id": 2,
+      "userId": 1,
+      "startTime": "2024-01-21T07:30:00Z",
+      "endTime": "2024-01-21T08:15:00Z",
+      "durationMinutes": 45,
+      "totalPoses": 12,
+      "averageAccuracy": 88.2
+    },
+    {
+      "id": 3,
+      "userId": 2,
+      "startTime": "2024-01-21T18:00:00Z",
+      "endTime": "2024-01-21T18:25:00Z",
+      "durationMinutes": 25,
+      "totalPoses": 6,
+      "averageAccuracy": 91.0
+    }
+  ],
+  "poseAttempts": [
+    {
+      "id": 1,
+      "sessionId": 1,
+      "userId": 1,
+      "poseId": 1,
+      "accuracy": 92.5,
+      "durationSeconds": 60,
+      "feedback": ["Great posture!", "Keep your shoulders relaxed"]
+    },
+    {
+      "id": 2,
+      "sessionId": 1,
+      "userId": 1,
+      "poseId": 2,
+      "accuracy": 78.0,
+      "durationSeconds": 45,
+      "feedback": ["Work on your balance", "Try focusing on a fixed point"]
+    },
+    {
+      "id": 3,
+      "sessionId": 2,
+      "userId": 1,
+      "poseId": 5,
+      "accuracy": 88.5,
+      "durationSeconds": 30,
+      "feedback": ["Good form!", "Lift your chest a bit higher"]
+    }
+  ],
+  "contactMessages": [
+    {
+      "id": 1,
+      "name": "Alex Johnson",
+      "email": "alex@email.com",
+      "subject": "Feature Request",
+      "message": "It would be great to have voice guidance during poses.",
+      "status": "pending",
+      "createdAt": "2024-01-22T10:30:00Z"
+    },
+    {
+      "id": 2,
+      "name": "Maria Garcia",
+      "email": "maria@email.com",
+      "subject": "Great App!",
+      "message": "Love using YogaGuru. The pose detection is very accurate!",
+      "status": "read",
+      "createdAt": "2024-01-21T16:45:00Z"
+    }
+  ],
+  "userProgress": [
+    {
+      "userId": 1,
+      "poseId": 1,
+      "bestAccuracy": 95.0,
+      "averageAccuracy": 89.5,
+      "totalAttempts": 15,
+      "masteryLevel": "Intermediate"
+    },
+    {
+      "userId": 1,
+      "poseId": 2,
+      "bestAccuracy": 85.0,
+      "averageAccuracy": 78.2,
+      "totalAttempts": 8,
+      "masteryLevel": "Learning"
+    }
+  ],
+  "achievements": [
+    {
+      "id": 1,
+      "name": "First Steps",
+      "description": "Complete your first yoga session",
+      "points": 10
+    },
+    {
+      "id": 2,
+      "name": "Week Warrior",
+      "description": "Practice for 7 consecutive days",
+      "points": 50
+    },
+    {
+      "id": 3,
+      "name": "Pose Master",
+      "description": "Achieve 95%+ accuracy on any pose",
+      "points": 25
+    }
+  ]
+}
