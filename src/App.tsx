@@ -13,6 +13,7 @@ import Team from './pages/Team';
 import Contact from './pages/Contact';
 import Auth from './pages/Auth';
 import Profile from './pages/Profile';
+import CategoryDetail from './pages/CategoryDetail';
 import './styles/index.css';
 
 const App: React.FC = () => {
@@ -32,6 +33,7 @@ const App: React.FC = () => {
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Auth />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/category/:categoryId" element={<CategoryDetail />} />
         </Routes>
       </main>
       <Footer />

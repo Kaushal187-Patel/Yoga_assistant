@@ -1,9 +1,11 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Webcam from 'react-webcam';
-import { FaPlay, FaStop, FaCamera, FaInfoCircle, FaCheckCircle, FaExclamationTriangle } from 'react-icons/fa';
+import { FaPlay, FaStop, FaCamera, FaInfoCircle, FaCheckCircle, FaExclamationTriangle, FaTimes } from 'react-icons/fa';
 import './PoseDetection.css';
 
 const PoseDetection = () => {
+  const navigate = useNavigate();
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
   const [isRunning, setIsRunning] = useState(false);
@@ -11,13 +13,109 @@ const PoseDetection = () => {
   const [currentPose, setCurrentPose] = useState(null);
   const [accuracy, setAccuracy] = useState(0);
   const [feedback, setFeedback] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedSubCategory, setSelectedSubCategory] = useState(null);
+
+  // Comprehensive Yoga Categories
+  const yogaCategories = [
+    {
+      id: 'pain-relief',
+      name: 'Pain Relief Yoga',
+      icon: '🩹',
+      subCategories: [
+        'Back Pain', 'Knee Pain', 'Neck Pain', 'Shoulder Pain', 
+        'Sciatica', 'Joint Pain', 'Arthritis', 'Muscle Tension'
+      ]
+    },
+    {
+      id: 'disease-specific',
+      name: 'Disease-Specific Yoga',
+      icon: '🏥',
+      subCategories: [
+        'Diabetes', 'Blood Pressure (BP)', 'Thyroid', 'PCOS', 
+        'Asthma', 'Heart Health', 'Digestive Issues', 'Immune System'
+      ]
+    },
+    {
+      id: 'age-groups',
+      name: 'Yoga for Age Groups',
+      icon: '👥',
+      subCategories: [
+        'Kids Yoga (5-12 years)', 'Teens Yoga (13-19 years)', 
+        'Adults (20-50 years)', 'Seniors (50+ years)'
+      ]
+    },
+    {
+      id: 'women',
+      name: 'Yoga for Women',
+      icon: '👩',
+      subCategories: [
+        'Pregnancy Yoga', 'Postnatal Yoga', 'Menstrual Health', 
+        'Menopause', 'Hormonal Balance', 'Pelvic Health'
+      ]
+    },
+    {
+      id: 'mental-health',
+      name: 'Yoga for Mental Health',
+      icon: '🧘',
+      subCategories: [
+        'Stress Relief', 'Anxiety Management', 'Depression Support', 
+        'Sleep Disorders', 'Focus & Concentration', 'Emotional Balance'
+      ]
+    },
+    {
+      id: 'fitness-goals',
+      name: 'Fitness & Body Goals',
+      icon: '💪',
+      subCategories: [
+        'Weight Loss', 'Weight Gain', 'Flexibility', 'Strength Building', 
+        'Muscle Tone', 'Core Strength', 'Cardio Fitness', 'Body Sculpting'
+      ]
+    },
+    {
+      id: 'lifestyle',
+      name: 'Lifestyle Yoga',
+      icon: '🌱',
+      subCategories: [
+        'Office Workers', 'Athletes', 'Daily Routine', 'Morning Yoga', 
+        'Evening Yoga', 'Desk Yoga', 'Travel Yoga', 'Quick Sessions'
+      ]
+    },
+    {
+      id: 'meditation',
+      name: 'Meditation & Pranayama',
+      icon: '🕉️',
+      subCategories: [
+        'Breathing Exercises', 'Mindfulness', 'Guided Meditation', 
+        'Chakra Balancing', 'Energy Healing', 'Relaxation Techniques'
+      ]
+    },
+    {
+      id: 'programs',
+      name: 'Yoga Programs',
+      icon: '📚',
+      subCategories: [
+        'Online Programs', 'Offline Classes', '7-Day Challenge', 
+        '30-Day Transformation', 'Beginner Course', 'Advanced Training'
+      ]
+    },
+    {
+      id: 'levels',
+      name: 'Yoga Levels',
+      icon: '📊',
+      subCategories: [
+        'Beginner', 'Intermediate', 'Advanced', 'Expert', 
+        'Therapeutic', 'Restorative', 'Power Yoga', 'Gentle Yoga'
+      ]
+    }
+  ];
 
   const yogaPoses = [
-    { name: 'Tadasana (Mountain Pose)', difficulty: 'Beginner' },
-    { name: 'Vrikshasana (Tree Pose)', difficulty: 'Beginner' },
-    { name: 'Trikonasana (Triangle Pose)', difficulty: 'Intermediate' },
-    { name: 'Virabhadrasana (Warrior Pose)', difficulty: 'Intermediate' },
-    { name: 'Bhujangasana (Cobra Pose)', difficulty: 'Beginner' },
+    { name: 'Tadasana (Mountain Pose)', difficulty: 'Beginner', categories: ['pain-relief', 'beginner', 'lifestyle'] },
+    { name: 'Vrikshasana (Tree Pose)', difficulty: 'Beginner', categories: ['mental-health', 'beginner'] },
+    { name: 'Trikonasana (Triangle Pose)', difficulty: 'Intermediate', categories: ['fitness-goals', 'intermediate'] },
+    { name: 'Virabhadrasana (Warrior Pose)', difficulty: 'Intermediate', categories: ['fitness-goals', 'intermediate'] },
+    { name: 'Bhujangasana (Cobra Pose)', difficulty: 'Beginner', categories: ['pain-relief', 'back-pain', 'beginner'] },
   ];
 
   const instructions = [
@@ -82,6 +180,53 @@ const PoseDetection = () => {
     return '#e74c3c';
   };
 
+  // Enhanced filtering logic
+  const getFilteredPoses = () => {
+    if (!selectedCategory && !selectedSubCategory) {
+      return yogaPoses;
+    }
+
+    return yogaPoses.filter(pose => {
+      const categories = pose.categories || [];
+      const categoryMatch = selectedCategory 
+        ? categories.some(cat => {
+            const catId = cat.toLowerCase().replace(/\s+/g, '-');
+            return catId.includes(selectedCategory) || selectedCategory.includes(catId);
+          })
+        : true;
+      
+      const subCategoryMatch = selectedSubCategory
+        ? categories.some(cat => {
+            const catLower = cat.toLowerCase();
+            const subLower = selectedSubCategory.toLowerCase();
+            return catLower.includes(subLower) || subLower.includes(catLower);
+          })
+        : true;
+
+      return categoryMatch && subCategoryMatch;
+    });
+  };
+
+  const filteredPoses = getFilteredPoses();
+
+  const handleCategorySelect = (categoryId, subCategory = null) => {
+    // Navigate to category detail page
+    const category = yogaCategories.find(c => c.id === categoryId);
+    if (category) {
+      navigate(`/category/${categoryId}`, { 
+        state: { 
+          category: category,
+          subCategory: subCategory 
+        } 
+      });
+    }
+  };
+
+  const clearFilter = () => {
+    setSelectedCategory(null);
+    setSelectedSubCategory(null);
+  };
+
   return (
     <div className="pose-detection-page">
       {/* Hero Section */}
@@ -92,11 +237,44 @@ const PoseDetection = () => {
         </div>
       </section>
 
+      {/* Category Filter Section */}
+      <section className="section category-section">
+        <div className="container">
+          <div className="category-header">
+            <div className="category-title-wrapper">
+              <h2>Choose Your Yoga Category</h2>
+              <p>Select a category that matches your health goals, age, or lifestyle</p>
+            </div>
+          </div>
+
+          <div className="categories-grid">
+            {yogaCategories.map((category) => (
+              <div 
+                key={category.id} 
+                className="category-card"
+                onClick={() => handleCategorySelect(category.id)}
+              >
+                <div className="category-icon">{category.icon}</div>
+                <h3>{category.name}</h3>
+                <div className="category-subcategories">
+                  {category.subCategories.slice(0, 4).map((sub, index) => (
+                    <span key={index} className="subcategory-tag">{sub}</span>
+                  ))}
+                  {category.subCategories.length > 4 && (
+                    <span className="subcategory-more">+{category.subCategories.length - 4} more</span>
+                  )}
+                </div>
+                <div className="category-arrow">→</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Main Detection Section */}
-      <section className="section detection-section">
+      {/* <section className="section detection-section">
         <div className="container">
           <div className="detection-grid">
-            {/* Webcam Container */}
             <div className="webcam-wrapper">
               <div className="webcam-container">
                 {hasPermission === false ? (
@@ -145,7 +323,6 @@ const PoseDetection = () => {
                 )}
               </div>
 
-              {/* Control Buttons */}
               <div className="control-buttons">
                 {!isRunning ? (
                   <button 
@@ -169,9 +346,7 @@ const PoseDetection = () => {
               </div>
             </div>
 
-            {/* Sidebar */}
             <div className="detection-sidebar">
-              {/* Feedback Panel */}
               <div className="sidebar-panel feedback-panel">
                 <h3><FaInfoCircle /> Feedback</h3>
                 {feedback.length > 0 ? (
@@ -190,7 +365,6 @@ const PoseDetection = () => {
                 )}
               </div>
 
-              {/* Instructions Panel */}
               <div className="sidebar-panel instructions-panel">
                 <h3>Instructions</h3>
                 <ul>
@@ -200,24 +374,27 @@ const PoseDetection = () => {
                 </ul>
               </div>
 
-              {/* Available Poses */}
               <div className="sidebar-panel poses-panel">
-                <h3>Available Poses</h3>
+                <h3>Available Poses {selectedCategory && `(${filteredPoses.length})`}</h3>
                 <div className="poses-list">
-                  {yogaPoses.map((pose, index) => (
-                    <div key={index} className="pose-tag">
-                      <span className="pose-name">{pose.name}</span>
-                      <span className={`pose-difficulty ${pose.difficulty.toLowerCase()}`}>
-                        {pose.difficulty}
-                      </span>
-                    </div>
-                  ))}
+                  {filteredPoses.length > 0 ? (
+                    filteredPoses.map((pose, index) => (
+                      <div key={index} className="pose-tag">
+                        <span className="pose-name">{pose.name}</span>
+                        <span className={`pose-difficulty ${pose.difficulty.toLowerCase()}`}>
+                          {pose.difficulty}
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="no-poses">No poses found for selected category. Try another filter.</p>
+                  )}
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Tips Section */}
       <section className="section tips-section gradient-bg-light">
