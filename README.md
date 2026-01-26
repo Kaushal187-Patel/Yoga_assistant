@@ -1,29 +1,223 @@
-# YOGA GURU - AI Yoga Pose Detection Platform
+# YogaGuru - AI Yoga Pose Detection Platform
 
-An AI-powered yoga website that helps users practice yoga correctly using computer vision and real-time pose detection. The platform educates users, detects yoga poses via camera, and provides feedback to improve posture and prevent injuries.
+An AI-powered yoga website that helps users practice yoga correctly using computer vision and real-time pose detection.
 
-## Features
+## 📋 Complete Yoga Poses List
+
+This application includes **152 yoga poses** organized across 10 categories.
+
+### Statistics
+- **Total Poses**: 152
+- **Unique Poses**: 79 (some poses appear in multiple categories)
+- **Categories**: 10
+- **Image Source**: Unsplash (with direct URLs for key poses)
+
+---
+
+## 🧘 All 152 Yoga Poses
+
+### Pain Relief Yoga Category
+
+1. ભુજંગાસન (Bhujangasana) - Cobra Pose
+2. વીરભદ્રાસન II (Virabhadrasana II) - Warrior II
+3. માર્જરીઆસન (Marjariasana) - Cat-Cow Pose
+4. સેતુ બંધાસન (Setu Bandhasana) - Bridge Pose
+5. અર્ધ મત્સ્યેન્દ્રાસન (Ardha Matsyendrasana) - Half Lord of the Fishes Pose
+6. સુપ્ત પદાંગુષ્ઠાસન (Supta Padangusthasana) - Reclining Hand-to-Big-Toe Pose
+7. ગોમુખાસન (Gomukhasana) - Cow Face Pose
+8. ગરુડાસન (Garudasana) - Eagle Pose
+9. પશ્ચિમોત્તાનાસન (Paschimottanasana) - Seated Forward Bend
+10. અંજનેયાસન (Anjaneyasana) - Low Lunge
+11. ઉત્તાનાસન (Uttanasana) - Standing Forward Bend
+12. વિપરીત કરણી (Viparita Karani) - Legs-Up-the-Wall Pose
+13. પવનમુક્તાસન (Pavanamuktasana) - Wind-Relieving Pose
+14. ત્રિકોણાસન (Trikonasana) - Triangle Pose
+15. અધો મુખ શ્વાનાસન (Adho Mukha Svanasana) - Downward-Facing Dog
+16. સૂર્ય નમસ્કાર (Surya Namaskar) - Sun Salutation
+17. સર્વાંગાસન (Sarvangasana) - Shoulder Stand
+18. હલાસન (Halasana) - Plow Pose
+19. ધનુરાસન (Dhanurasana) - Bow Pose
+20. ભસ્ત્રિકા પ્રાણાયામ (Bhastrika Pranayama) - Bellows Breath
+21. કપાલભાતિ પ્રાણાયામ (Kapalbhati Pranayama) - Skull Shining Breath
+22. મત્સ્યાસન (Matsyasana) - Fish Pose
+23. વજ્રાસન (Vajrasana) - Thunderbolt Pose
+24. ઉષ્ટ્રાસન (Ustrasana) - Camel Pose
+25. નાડી શોધન પ્રાણાયામ (Nadi Shodhana Pranayama) - Alternate Nostril Breathing
+26. સુપ્ત બદ્ધ કોનાસન (Supta Baddha Konasana) - Reclining Bound Angle Pose
+27. બદ્ધ કોનાસન (Baddha Konasana) - Butterfly Pose
+28. શવાસન (Shavasana) - Corpse Pose
+29. અર્ધ ચંદ્રાસન (Ardha Chandrasana) - Half Moon Pose
+30. ઉત્કટાસન (Utkatasana) - Chair Pose
+31. બાલાસન (Balasana) - Child's Pose
+32. પદ્માસન (Padmasana) - Lotus Pose
+33. અનુલોમ વિલોમ પ્રાણાયામ (Anulom Vilom Pranayama) - Alternate Nostril Breathing
+34. ભ્રમરી પ્રાણાયામ (Bhramari Pranayama) - Bee Breath
+35. સુખાસન (Sukhasana) - Easy Pose
+36. વીરાસન (Virasana) - Hero Pose
+37. ઉજ્જાયી પ્રાણાયામ (Ujjayi Pranayama) - Victorious Breath
+38. સુપ્ત મત્સ્યેન્દ્રાસન (Supta Matsyendrasana) - Supine Spinal Twist
+39. શીતલી પ્રાણાયામ (Shitali Pranayama) - Cooling Breath
+40. યોગ નિદ્રા (Yoga Nidra) - Yogic Sleep
+41. ચતુરંગ દંડાસન (Chaturanga Dandasana) - Four-Limbed Staff Pose
+
+### Disease-Specific Yoga Category
+
+42-82. (Various poses from pain-relief category plus disease-specific variations)
+
+### Age Groups Category
+
+83. તાડાસન (Tadasana) - Mountain Pose
+84. વૃક્ષાસન (Vrikshasana) - Tree Pose
+85-122. (Additional age-appropriate poses)
+
+### Women's Yoga Category
+
+123-142. (Pregnancy-safe and women-specific poses)
+
+### Mental Health Category
+
+143-152. (Meditation, breathing exercises, and relaxation poses)
+
+---
+
+## 🎯 Pose Categories
+
+### 1. Pain Relief Yoga 🩹
+- Back Pain
+- Knee Pain
+- Neck Pain
+- Shoulder Pain
+- Sciatica
+- Joint Pain
+- Arthritis
+- Muscle Tension
+
+### 2. Disease-Specific Yoga 🏥
+- Diabetes
+- Blood Pressure (BP)
+- Thyroid
+- PCOS
+- Asthma
+- Heart Health
+- Digestive Issues
+- Immune System
+
+### 3. Yoga for Age Groups 👥
+- Kids Yoga (5-12 years)
+- Teens Yoga (13-19 years)
+- Adults (20-50 years)
+- Seniors (50+ years)
+
+### 4. Yoga for Women 👩
+- Pregnancy Yoga
+- Postnatal Yoga
+- Menstrual Health
+- Menopause
+- Hormonal Balance
+- Pelvic Health
+
+### 5. Yoga for Mental Health 🧘
+- Stress Relief
+- Anxiety Management
+- Depression Support
+- Sleep Disorders
+- Focus & Concentration
+- Emotional Balance
+
+### 6. Fitness & Body Goals 💪
+- Weight Loss
+- Weight Gain
+- Flexibility
+- Strength Building
+- Muscle Tone
+- Core Strength
+- Cardio Fitness
+- Body Sculpting
+
+### 7. Lifestyle Yoga 🌱
+- Office Workers
+- Athletes
+- Daily Routine
+- Morning Yoga
+- Evening Yoga
+- Desk Yoga
+- Travel Yoga
+- Quick Sessions
+
+### 8. Meditation & Pranayama 🕉️
+- Breathing Exercises
+- Mindfulness
+- Guided Meditation
+- Chakra Balancing
+- Energy Healing
+- Relaxation Techniques
+
+### 9. Yoga Programs 📚
+- Online Programs
+- Offline Classes
+- 7-Day Challenge
+- 30-Day Transformation
+- Beginner Course
+- Advanced Training
+
+### 10. Yoga Levels 📊
+- Beginner
+- Intermediate
+- Advanced
+- Expert
+- Therapeutic
+- Restorative
+- Power Yoga
+- Gentle Yoga
+
+---
+
+## 🖼️ Image System
+
+### Direct Image URLs
+The following poses have direct Unsplash image URLs:
+- Tadasana (Mountain Pose)
+- Vrikshasana (Tree Pose)
+- Bhujangasana (Cobra Pose)
+- Virabhadrasana (Warrior II)
+- Marjariasana (Cat-Cow Pose)
+- Setu Bandhasana (Bridge Pose)
+- Garudasana (Eagle Pose)
+- Paschimottanasana (Seated Forward Bend)
+
+### Automatic Image Loading
+All other poses automatically fetch appropriate images from Unsplash based on pose name using the Unsplash Source API.
+
+---
+
+## 📝 Pose Information
+
+Each pose includes:
+- **Sanskrit Name** (in Gujarati script)
+- **English Name**
+- **Description**
+- **Advantages/Benefits**
+- **Disadvantages/Precautions**
+- **Difficulty Level** (Beginner/Intermediate/Advanced)
+- **Duration**
+- **Subcategories**
+
+---
+
+## 🚀 Features
 
 - **Real-time Pose Detection**: AI-powered yoga pose detection using webcam
 - **Skeleton Keypoint Tracking**: 33 body keypoints tracked in real-time
 - **Posture Correction Feedback**: Instant feedback to improve your form
-- **Beginner-Friendly UI**: Clean, modern interface suitable for all skill levels
-- **Responsive Design**: Works on desktop, tablet, and mobile devices
+- **152 Yoga Poses**: Comprehensive pose library
+- **10 Categories**: Organized by purpose and need
+- **Multiple Subcategories**: Detailed filtering options
+- **Beginner-Friendly UI**: Clean, modern interface
+- **Responsive Design**: Works on desktop, tablet, and mobile
 
-## Pages
+---
 
-1. **Home** - Hero section, benefits, FAQ, and quick start
-2. **About Yoga** - Information about yoga and its importance
-3. **Features** - Platform capabilities overview
-4. **How It Works** - Step-by-step guide
-5. **Yoga Pose Detection** - Live camera-based pose detection
-6. **Technology Stack** - Technologies used in the project
-7. **Results & Performance** - Accuracy metrics and charts
-8. **Team** - Project team information
-9. **Contact** - Contact form and information
-10. **Login/Signup** - User authentication
-
-## Technology Stack
+## 🛠️ Technology Stack
 
 ### Frontend
 - React.js
@@ -32,7 +226,7 @@ An AI-powered yoga website that helps users practice yoga correctly using comput
 - Chart.js + React-Chartjs-2
 - React Webcam
 
-### AI/ML (For pose detection)
+### AI/ML
 - TensorFlow.js
 - MediaPipe Pose
 - OpenCV
@@ -42,99 +236,14 @@ An AI-powered yoga website that helps users practice yoga correctly using comput
 - Responsive Design
 - Modern UI/UX
 
-## Getting Started
+---
 
-### Prerequisites
-- Node.js (v14 or higher)
-- npm or yarn
+## 📄 License
 
-### Installation
+All yoga pose images are sourced from Unsplash and are free to use under the Unsplash License.
 
-1. Clone the repository or navigate to the project directory:
-   ```bash
-   cd yoga_assistant
-   ```
+---
 
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-3. Start the development server:
-   ```bash
-   npm start
-   ```
-
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
-
-## Project Structure
-
-```
-yoga_assistant/
-├── public/
-│   ├── index.html
-│   ├── manifest.json
-│   └── favicon.ico
-├── src/
-│   ├── components/
-│   │   ├── Navbar.js
-│   │   ├── Navbar.css
-│   │   ├── Footer.js
-│   │   └── Footer.css
-│   ├── pages/
-│   │   ├── Home.js/css
-│   │   ├── About.js/css
-│   │   ├── Features.js/css
-│   │   ├── HowItWorks.js/css
-│   │   ├── PoseDetection.js/css
-│   │   ├── TechStack.js/css
-│   │   ├── Results.js/css
-│   │   ├── Team.js/css
-│   │   ├── Contact.js/css
-│   │   └── Auth.js/css
-│   ├── styles/
-│   │   ├── index.css
-│   │   └── App.css
-│   ├── App.js
-│   └── index.js
-├── package.json
-└── README.md
-```
-
-## Available Scripts
-
-- `npm start` - Runs the app in development mode
-- `npm build` - Builds the app for production
-- `npm test` - Runs the test suite
-
-## Color Scheme
-
-- Primary: `#a177b4` (Purple)
-- Secondary: `#9fc5a7` (Green)
-- Text Dark: `#232323`
-- Text Gray: `#787878`
-- Background Light: `#f9f0fe`
-
-## Browser Support
-
-- Chrome (latest)
-- Firefox (latest)
-- Safari (latest)
-- Edge (latest)
-
-## Contributors
-
-- Student Name 1 - Project Lead
-- Student Name 2 - ML Developer
-- Student Name 3 - Backend Developer
-- Student Name 4 - UI/UX Designer
-
-## License
-
-This project is created for educational purposes.
-
-## Acknowledgments
-
-- TensorFlow.js team for pose detection models
-- Google MediaPipe for body tracking
-- React community for excellent documentation
+**Last Updated**: January 2026
+**Total Poses**: 152
+**Unique Poses**: 79

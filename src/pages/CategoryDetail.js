@@ -10,76 +10,64 @@ const CategoryDetail = () => {
   const [category, setCategory] = useState(null);
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
 
-  // Helper function to generate unique yoga pose image URLs
+  // Helper function to get yoga pose image URLs
+  // Uses local images first, then falls back to Unsplash
   const getPoseImage = (poseId, poseName) => {
-    // Use Unsplash with specific yoga pose image IDs
-    // These are actual yoga-related images from Unsplash
-    const yogaImageIds = [
-      '1506126613408-eca07ce68773', '1544367567-0a2c9e95a8c5', '1571019613454-0a2c9e95a8c5',
-      '1576678927484-0a2c9e95a8c5', '1576678927485-0a2c9e95a8c5', '1576678927486-0a2c9e95a8c5',
-      '1576678927487-0a2c9e95a8c5', '1576678927488-0a2c9e95a8c5', '1576678927489-0a2c9e95a8c5',
-      '1576678927490-0a2c9e95a8c5', '1576678927491-0a2c9e95a8c5', '1576678927492-0a2c9e95a8c5',
-      '1576678927493-0a2c9e95a8c5', '1576678927494-0a2c9e95a8c5', '1576678927495-0a2c9e95a8c5',
-      '1576678927496-0a2c9e95a8c5', '1576678927497-0a2c9e95a8c5', '1576678927498-0a2c9e95a8c5',
-      '1576678927499-0a2c9e95a8c5', '1576678927500-0a2c9e95a8c5', '1576678927501-0a2c9e95a8c5',
-      '1576678927502-0a2c9e95a8c5', '1576678927503-0a2c9e95a8c5', '1576678927504-0a2c9e95a8c5',
-      '1576678927505-0a2c9e95a8c5', '1576678927506-0a2c9e95a8c5', '1576678927507-0a2c9e95a8c5',
-      '1576678927508-0a2c9e95a8c5', '1576678927509-0a2c9e95a8c5', '1576678927510-0a2c9e95a8c5',
-      '1576678927511-0a2c9e95a8c5', '1576678927512-0a2c9e95a8c5', '1576678927513-0a2c9e95a8c5',
-      '1576678927514-0a2c9e95a8c5', '1576678927515-0a2c9e95a8c5', '1576678927516-0a2c9e95a8c5',
-      '1576678927517-0a2c9e95a8c5', '1576678927518-0a2c9e95a8c5', '1576678927519-0a2c9e95a8c5',
-      '1576678927520-0a2c9e95a8c5', '1576678927521-0a2c9e95a8c5', '1576678927522-0a2c9e95a8c5',
-      '1576678927523-0a2c9e95a8c5', '1576678927524-0a2c9e95a8c5', '1576678927525-0a2c9e95a8c5',
-      '1576678927526-0a2c9e95a8c5', '1576678927527-0a2c9e95a8c5', '1576678927528-0a2c9e95a8c5',
-      '1576678927529-0a2c9e95a8c5', '1576678927530-0a2c9e95a8c5', '1576678927531-0a2c9e95a8c5',
-      '1576678927532-0a2c9e95a8c5', '1576678927533-0a2c9e95a8c5', '1576678927534-0a2c9e95a8c5',
-      '1576678927535-0a2c9e95a8c5', '1576678927536-0a2c9e95a8c5', '1576678927537-0a2c9e95a8c5',
-      '1576678927538-0a2c9e95a8c5', '1576678927539-0a2c9e95a8c5', '1576678927540-0a2c9e95a8c5',
-      '1576678927541-0a2c9e95a8c5', '1576678927542-0a2c9e95a8c5', '1576678927543-0a2c9e95a8c5',
-      '1576678927544-0a2c9e95a8c5', '1576678927545-0a2c9e95a8c5', '1576678927546-0a2c9e95a8c5',
-      '1576678927547-0a2c9e95a8c5', '1576678927548-0a2c9e95a8c5', '1576678927549-0a2c9e95a8c5',
-      '1576678927550-0a2c9e95a8c5', '1576678927551-0a2c9e95a8c5', '1576678927552-0a2c9e95a8c5',
-      '1576678927553-0a2c9e95a8c5', '1576678927554-0a2c9e95a8c5', '1576678927555-0a2c9e95a8c5',
-      '1576678927556-0a2c9e95a8c5', '1576678927557-0a2c9e95a8c5', '1576678927558-0a2c9e95a8c5',
-      '1576678927559-0a2c9e95a8c5', '1576678927560-0a2c9e95a8c5', '1576678927561-0a2c9e95a8c5',
-      '1576678927562-0a2c9e95a8c5', '1576678927563-0a2c9e95a8c5', '1576678927564-0a2c9e95a8c5',
-      '1576678927565-0a2c9e95a8c5', '1576678927566-0a2c9e95a8c5', '1576678927567-0a2c9e95a8c5',
-      '1576678927568-0a2c9e95a8c5', '1576678927569-0a2c9e95a8c5', '1576678927570-0a2c9e95a8c5',
-      '1576678927571-0a2c9e95a8c5', '1576678927572-0a2c9e95a8c5', '1576678927573-0a2c9e95a8c5',
-      '1576678927574-0a2c9e95a8c5', '1576678927575-0a2c9e95a8c5', '1576678927576-0a2c9e95a8c5',
-      '1576678927577-0a2c9e95a8c5', '1576678927578-0a2c9e95a8c5', '1576678927579-0a2c9e95a8c5',
-      '1576678927580-0a2c9e95a8c5', '1576678927581-0a2c9e95a8c5', '1576678927582-0a2c9e95a8c5',
-      '1576678927583-0a2c9e95a8c5', '1576678927584-0a2c9e95a8c5', '1576678927585-0a2c9e95a8c5',
-      '1576678927586-0a2c9e95a8c5', '1576678927587-0a2c9e95a8c5', '1576678927588-0a2c9e95a8c5',
-      '1576678927589-0a2c9e95a8c5', '1576678927590-0a2c9e95a8c5', '1576678927591-0a2c9e95a8c5',
-      '1576678927592-0a2c9e95a8c5', '1576678927593-0a2c9e95a8c5', '1576678927594-0a2c9e95a8c5',
-      '1576678927595-0a2c9e95a8c5', '1576678927596-0a2c9e95a8c5', '1576678927597-0a2c9e95a8c5',
-      '1576678927598-0a2c9e95a8c5', '1576678927599-0a2c9e95a8c5', '1576678927600-0a2c9e95a8c5',
-      '1576678927601-0a2c9e95a8c5', '1576678927602-0a2c9e95a8c5', '1576678927603-0a2c9e95a8c5',
-      '1576678927604-0a2c9e95a8c5', '1576678927605-0a2c9e95a8c5', '1576678927606-0a2c9e95a8c5',
-      '1576678927607-0a2c9e95a8c5', '1576678927608-0a2c9e95a8c5', '1576678927609-0a2c9e95a8c5',
-      '1576678927610-0a2c9e95a8c5', '1576678927611-0a2c9e95a8c5', '1576678927612-0a2c9e95a8c5',
-      '1576678927613-0a2c9e95a8c5', '1576678927614-0a2c9e95a8c5', '1576678927615-0a2c9e95a8c5',
-      '1576678927616-0a2c9e95a8c5', '1576678927617-0a2c9e95a8c5', '1576678927618-0a2c9e95a8c5',
-      '1576678927619-0a2c9e95a8c5', '1576678927620-0a2c9e95a8c5', '1576678927621-0a2c9e95a8c5',
-      '1576678927622-0a2c9e95a8c5', '1576678927623-0a2c9e95a8c5', '1576678927624-0a2c9e95a8c5',
-      '1576678927625-0a2c9e95a8c5', '1576678927626-0a2c9e95a8c5', '1576678927627-0a2c9e95a8c5',
-      '1576678927628-0a2c9e95a8c5', '1576678927629-0a2c9e95a8c5', '1576678927630-0a2c9e95a8c5',
-      '1576678927631-0a2c9e95a8c5', '1576678927632-0a2c9e95a8c5', '1576678927633-0a2c9e95a8c5',
-      '1576678927634-0a2c9e95a8c5', '1576678927635-0a2c9e95a8c5', '1576678927636-0a2c9e95a8c5',
-      '1576678927637-0a2c9e95a8c5', '1576678927638-0a2c9e95a8c5', '1576678927639-0a2c9e95a8c5',
-      '1576678927640-0a2c9e95a8c5', '1576678927641-0a2c9e95a8c5', '1576678927642-0a2c9e95a8c5',
-      '1576678927643-0a2c9e95a8c5', '1576678927644-0a2c9e95a8c5', '1576678927645-0a2c9e95a8c5',
-      '1576678927646-0a2c9e95a8c5', '1576678927647-0a2c9e95a8c5', '1576678927648-0a2c9e95a8c5',
-      '1576678927649-0a2c9e95a8c5', '1576678927650-0a2c9e95a8c5'
-    ];
+    // Try local image first (from pose-images folder)
+    // Images should be named: pose-{id}.jpg, pose-{id}.png, etc.
+    const localImagePath = `/pose-images/pose-${poseId}.jpg`;
     
-    // Select unique image ID based on pose ID
-    const imageId = yogaImageIds[poseId % yogaImageIds.length] || yogaImageIds[0];
+    // Direct image URLs from Unsplash for specific poses (fallback)
+    const directImageMap = {
+      // Standing Poses
+      'Tadasana': 'https://images.unsplash.com/photo-1545389336-cf090694435e?w=400&h=300&fit=crop&auto=format',
+      'Vrikshasana': 'https://images.unsplash.com/photo-1758274525911-402f99afec14?w=400&h=300&fit=crop&auto=format',
+      
+      // Backbends - Using local images from collage
+      'Bhujangasana': localImagePath, // Pose ID 1 - from collage
+      'Setu Bandhasana': localImagePath, // Pose ID 4 - from collage
+      
+      // Standing/Warrior Poses - Using local images from collage
+      'Virabhadrasana': localImagePath, // Pose ID 2 - from collage
+      'Anjaneyasana': localImagePath, // Pose ID 10 - from collage
+      
+      // Seated Poses - Using local images from collage
+      'Paschimottanasana': localImagePath, // Pose ID 9 - from collage
+      'Ardha Matsyendrasana': localImagePath, // Pose ID 5 - from collage
+      'Gomukhasana': localImagePath, // Pose ID 7 - from collage
+      
+      // Balancing Poses - Using local images from collage
+      'Garudasana': localImagePath, // Pose ID 8 - from collage
+      
+      // Supine Poses - Using local images from collage
+      'Supta Padangusthasana': localImagePath, // Pose ID 6 - from collage
+      
+      // Other Poses - Using local images from collage
+      'Marjariasana': localImagePath, // Pose ID 3 - from collage
+      'Pavanamuktasana': 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400&h=300&fit=crop&auto=format',
+      'Uttanasana': 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400&h=300&fit=crop&auto=format',
+      'Viparita Karani': 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400&h=300&fit=crop&auto=format',
+    };
     
-    // Return Unsplash image URL with proper dimensions
-    // Using Unsplash API format for yoga images
-    return `https://images.unsplash.com/photo-${imageId}?w=400&h=300&fit=crop&q=80&auto=format`;
+    // Check if we have a direct URL for this pose
+    if (directImageMap[poseName]) {
+      return directImageMap[poseName];
+    }
+    
+    // For all other poses, extract English name and use Unsplash search
+    // This will fetch appropriate yoga images based on pose name
+    const englishName = poseName.split('(')[1]?.split(')')[0]?.trim() || 
+                       poseName.split('-')[1]?.trim() || 
+                       'yoga pose';
+    
+    // Clean the name for URL search
+    const searchTerm = englishName.toLowerCase()
+      .replace(/\s+/g, '%20')
+      .replace(/[^a-z0-9%]/g, '');
+    
+    // Use Unsplash Source API with yoga + pose name search
+    // The sig parameter ensures consistent images for same pose ID
+    return `https://source.unsplash.com/400x300/?yoga%20${searchTerm}&sig=${poseId}`;
   };
 
   // Comprehensive pose data with 10-15 poses per category and 3-7 poses per subcategory
@@ -3694,7 +3682,28 @@ const CategoryDetail = () => {
               {filteredPoses.map((pose) => (
                 <div key={pose.id} className="pose-card">
                   <div className="pose-image-container">
-                    <img src={pose.image} alt={pose.name} className="pose-image" />
+                    <img 
+                      src={pose.image} 
+                      alt={pose.name} 
+                      className="pose-image"
+                      loading="lazy"
+                      onError={(e) => {
+                        // If image fails to load, try generic yoga image
+                        const fallbackUrl = `https://source.unsplash.com/400x300/?yoga&sig=${pose.id}`;
+                        
+                        // Try fallback, if that fails too, hide image to show gradient
+                        let errorCount = 0;
+                        e.target.onerror = () => {
+                          errorCount++;
+                          if (errorCount >= 2) {
+                            e.target.style.display = 'none';
+                          } else {
+                            e.target.src = fallbackUrl;
+                          }
+                        };
+                        e.target.src = fallbackUrl;
+                      }}
+                    />
                     <span className={`pose-difficulty-badge ${pose.difficulty.toLowerCase()}`}>
                       {pose.difficulty}
                     </span>
