@@ -59,6 +59,11 @@ const Navbar = () => {
     <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
       <div className="navbar-container">
         <Link to="/" className="navbar-logo">
+          <img 
+            src="/yogaguru-icon-final.svg" 
+            alt="YogaGuru Logo" 
+            className="logo-icon"
+          />
           <span className="logo-text">YogaGuru</span>
         </Link>
 

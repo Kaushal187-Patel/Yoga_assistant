@@ -14,6 +14,7 @@ import Contact from './pages/Contact';
 import Auth from './pages/Auth';
 import Profile from './pages/Profile';
 import CategoryDetail from './pages/CategoryDetail';
+import PoseDetail from './pages/PoseDetail';
 import './styles/index.css';
 
 const App: React.FC = () => {
@@ -27,6 +28,7 @@ const App: React.FC = () => {
           <Route path="/features" element={<Features />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/pose-detection" element={<PoseDetection />} />
+          <Route path="/pose/:poseId" element={<PoseDetail />} />
           <Route path="/tech-stack" element={<TechStack />} />
           <Route path="/results" element={<Results />} />
           <Route path="/team" element={<Team />} />

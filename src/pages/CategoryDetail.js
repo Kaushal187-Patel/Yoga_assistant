@@ -21,11 +21,12 @@ const CategoryDetail = () => {
     const directImageMap = {
       // Standing Poses
       'Tadasana': 'https://images.unsplash.com/photo-1545389336-cf090694435e?w=400&h=300&fit=crop&auto=format',
-      'Vrikshasana': 'https://images.unsplash.com/photo-1758274525911-402f99afec14?w=400&h=300&fit=crop&auto=format',
+      'Vrikshasana': 'https://images.unsplash.com/photo-1758274525911-402f99afec14?w=600&h=400&fit=crop&auto=format&q=80',
+      'Trikonasana': 'https://images.unsplash.com/photo-1767611090899-163209a4ead1?w=600&h=400&fit=crop&auto=format&q=80', // Triangle Pose
       
-      // Backbends - Using local images from collage
-      'Bhujangasana': localImagePath, // Pose ID 1 - from collage
-      'Setu Bandhasana': localImagePath, // Pose ID 4 - from collage
+      // Backbends - Using Unsplash direct URLs
+      'Bhujangasana': 'https://images.unsplash.com/photo-1717821552922-61e18814a44a?w=600&h=400&fit=crop&auto=format&q=80', // Cobra Pose
+      'Setu Bandhasana': 'https://images.unsplash.com/photo-1767611086180-6b1176976371?w=600&h=400&fit=crop&auto=format&q=80', // Bridge Pose
       
       // Standing/Warrior Poses - Using local images from collage
       'Virabhadrasana': localImagePath, // Pose ID 2 - from collage
@@ -42,8 +43,13 @@ const CategoryDetail = () => {
       // Supine Poses - Using local images from collage
       'Supta Padangusthasana': localImagePath, // Pose ID 6 - from collage
       
-      // Other Poses - Using local images from collage
-      'Marjariasana': localImagePath, // Pose ID 3 - from collage
+      // Other Poses - Using Unsplash direct URLs
+      'Marjariasana': 'https://images.unsplash.com/photo-1758599881262-7b79a56ac284?w=600&h=400&fit=crop&auto=format&q=80', // Cat-Cow Pose
+      'Adho Mukha Svanasana': 'https://images.unsplash.com/photo-1767611121194-3cb554c9a9ec?w=600&h=400&fit=crop&auto=format&q=80', // Downward-Facing Dog
+      'Surya Namaskar': 'https://images.unsplash.com/photo-1606663368493-131f4f97c095?w=600&h=400&fit=crop&auto=format&q=80', // Sun Salutation
+      'Balasana': 'https://images.unsplash.com/photo-1767611118672-d3887038786c?w=600&h=400&fit=crop&auto=format&q=80', // Child's Pose
+      'Padmasana': 'https://images.unsplash.com/photo-1577344718665-3e7c0c1ecf6b?w=600&h=400&fit=crop&auto=format&q=80', // Lotus Pose
+      'Vajrasana': 'https://images.unsplash.com/photo-1697274834392-04ff3b76ef20?w=600&h=400&fit=crop&auto=format&q=80', // Thunderbolt Pose
       'Pavanamuktasana': 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400&h=300&fit=crop&auto=format',
       'Uttanasana': 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400&h=300&fit=crop&auto=format',
       'Viparita Karani': 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=400&h=300&fit=crop&auto=format',
@@ -3680,7 +3686,12 @@ const CategoryDetail = () => {
 
             <div className="poses-grid">
               {filteredPoses.map((pose) => (
-                <div key={pose.id} className="pose-card">
+                <div 
+                  key={pose.id} 
+                  className="pose-card"
+                  onClick={() => navigate(`/pose/${pose.id}`, { state: { pose: pose } })}
+                  style={{ cursor: 'pointer' }}
+                >
                   <div className="pose-image-container">
                     <img 
                       src={pose.image} 

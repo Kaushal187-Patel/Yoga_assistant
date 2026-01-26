@@ -12,7 +12,12 @@ const Footer = () => {
         <div className="footer-grid">
           <div className="footer-brand">
             <Link to="/" className="footer-logo">
-              YogaGuru
+              <img 
+                src="/yogaguru-icon-final.svg" 
+                alt="YogaGuru Logo" 
+                className="footer-logo-icon"
+              />
+              <span>YogaGuru</span>
             </Link>
             <p>
               AI-powered yoga pose detection platform helping you practice yoga correctly 

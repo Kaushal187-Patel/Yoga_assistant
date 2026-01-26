@@ -21,8 +21,22 @@
   font-size: var(--font-2xl);
   font-weight: 700;
   color: var(--white);
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
   margin-bottom: 20px;
+  text-decoration: none;
+  transition: var(--transition-normal);
+}
+
+.footer-brand .footer-logo:hover {
+  transform: translateY(-2px);
+}
+
+.footer-logo-icon {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
 }
 
 .footer-brand p {

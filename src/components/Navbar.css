@@ -36,6 +36,23 @@
   display: flex;
   align-items: center;
   gap: 10px;
+  text-decoration: none;
+  transition: var(--transition-normal);
+}
+
+.navbar-logo:hover {
+  transform: translateY(-2px);
+}
+
+.logo-icon {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  transition: var(--transition-normal);
+}
+
+.navbar-logo:hover .logo-icon {
+  transform: scale(1.1) rotate(5deg);
 }
 
 .logo-text {
@@ -252,5 +269,10 @@
 
   .logo-text {
     font-size: var(--font-lg);
+  }
+
+  .logo-icon {
+    width: 32px;
+    height: 32px;
   }
 }

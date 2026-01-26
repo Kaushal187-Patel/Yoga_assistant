@@ -1,400 +1,275 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Webcam from 'react-webcam';
-import { FaPlay, FaStop, FaCamera, FaInfoCircle, FaCheckCircle, FaExclamationTriangle, FaTimes } from 'react-icons/fa';
+import { FaArrowRight } from 'react-icons/fa';
 import './PoseDetection.css';
 
 const PoseDetection = () => {
   const navigate = useNavigate();
-  const webcamRef = useRef(null);
-  const canvasRef = useRef(null);
-  const [isRunning, setIsRunning] = useState(false);
-  const [hasPermission, setHasPermission] = useState(null);
-  const [currentPose, setCurrentPose] = useState(null);
-  const [accuracy, setAccuracy] = useState(0);
-  const [feedback, setFeedback] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [selectedSubCategory, setSelectedSubCategory] = useState(null);
+  const [allPoses, setAllPoses] = useState([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterDifficulty, setFilterDifficulty] = useState('all');
 
-  // Comprehensive Yoga Categories
-  const yogaCategories = [
-    {
-      id: 'pain-relief',
-      name: 'Pain Relief Yoga',
-      icon: '🩹',
-      subCategories: [
-        'Back Pain', 'Knee Pain', 'Neck Pain', 'Shoulder Pain', 
-        'Sciatica', 'Joint Pain', 'Arthritis', 'Muscle Tension'
-      ]
-    },
-    {
-      id: 'disease-specific',
-      name: 'Disease-Specific Yoga',
-      icon: '🏥',
-      subCategories: [
-        'Diabetes', 'Blood Pressure (BP)', 'Thyroid', 'PCOS', 
-        'Asthma', 'Heart Health', 'Digestive Issues', 'Immune System'
-      ]
-    },
-    {
-      id: 'age-groups',
-      name: 'Yoga for Age Groups',
-      icon: '👥',
-      subCategories: [
-        'Kids Yoga (5-12 years)', 'Teens Yoga (13-19 years)', 
-        'Adults (20-50 years)', 'Seniors (50+ years)'
-      ]
-    },
-    {
-      id: 'women',
-      name: 'Yoga for Women',
-      icon: '👩',
-      subCategories: [
-        'Pregnancy Yoga', 'Postnatal Yoga', 'Menstrual Health', 
-        'Menopause', 'Hormonal Balance', 'Pelvic Health'
-      ]
-    },
-    {
-      id: 'mental-health',
-      name: 'Yoga for Mental Health',
-      icon: '🧘',
-      subCategories: [
-        'Stress Relief', 'Anxiety Management', 'Depression Support', 
-        'Sleep Disorders', 'Focus & Concentration', 'Emotional Balance'
-      ]
-    },
-    {
-      id: 'fitness-goals',
-      name: 'Fitness & Body Goals',
-      icon: '💪',
-      subCategories: [
-        'Weight Loss', 'Weight Gain', 'Flexibility', 'Strength Building', 
-        'Muscle Tone', 'Core Strength', 'Cardio Fitness', 'Body Sculpting'
-      ]
-    },
-    {
-      id: 'lifestyle',
-      name: 'Lifestyle Yoga',
-      icon: '🌱',
-      subCategories: [
-        'Office Workers', 'Athletes', 'Daily Routine', 'Morning Yoga', 
-        'Evening Yoga', 'Desk Yoga', 'Travel Yoga', 'Quick Sessions'
-      ]
-    },
-    {
-      id: 'meditation',
-      name: 'Meditation & Pranayama',
-      icon: '🕉️',
-      subCategories: [
-        'Breathing Exercises', 'Mindfulness', 'Guided Meditation', 
-        'Chakra Balancing', 'Energy Healing', 'Relaxation Techniques'
-      ]
-    },
-    {
-      id: 'programs',
-      name: 'Yoga Programs',
-      icon: '📚',
-      subCategories: [
-        'Online Programs', 'Offline Classes', '7-Day Challenge', 
-        '30-Day Transformation', 'Beginner Course', 'Advanced Training'
-      ]
-    },
-    {
-      id: 'levels',
-      name: 'Yoga Levels',
-      icon: '📊',
-      subCategories: [
-        'Beginner', 'Intermediate', 'Advanced', 'Expert', 
-        'Therapeutic', 'Restorative', 'Power Yoga', 'Gentle Yoga'
-      ]
-    }
-  ];
-
-  const yogaPoses = [
-    { name: 'Tadasana (Mountain Pose)', difficulty: 'Beginner', categories: ['pain-relief', 'beginner', 'lifestyle'] },
-    { name: 'Vrikshasana (Tree Pose)', difficulty: 'Beginner', categories: ['mental-health', 'beginner'] },
-    { name: 'Trikonasana (Triangle Pose)', difficulty: 'Intermediate', categories: ['fitness-goals', 'intermediate'] },
-    { name: 'Virabhadrasana (Warrior Pose)', difficulty: 'Intermediate', categories: ['fitness-goals', 'intermediate'] },
-    { name: 'Bhujangasana (Cobra Pose)', difficulty: 'Beginner', categories: ['pain-relief', 'back-pain', 'beginner'] },
-  ];
-
-  const instructions = [
-    'Stand 6-8 feet away from the camera',
-    'Ensure your full body is visible in the frame',
-    'Make sure you have good lighting',
-    'Wear fitted clothing for better detection',
-    'Start with basic poses and progress gradually'
-  ];
-
-  const handleUserMedia = useCallback(() => {
-    setHasPermission(true);
-  }, []);
-
-  const handleUserMediaError = useCallback(() => {
-    setHasPermission(false);
-  }, []);
-
-  const startDetection = () => {
-    setIsRunning(true);
-    simulateDetection();
-  };
-
-  const stopDetection = () => {
-    setIsRunning(false);
-    setCurrentPose(null);
-    setAccuracy(0);
-    setFeedback([]);
-  };
-
-  const simulateDetection = () => {
-    // Simulated pose detection - in production, this would use TensorFlow.js
-    const randomPose = yogaPoses[Math.floor(Math.random() * yogaPoses.length)];
-    const randomAccuracy = Math.floor(Math.random() * 30) + 70;
+  // Helper function to get pose image (same as CategoryDetail)
+  const getPoseImage = (poseId, poseName) => {
+    const directImageMap = {
+      'Tadasana': 'https://images.unsplash.com/photo-1545389336-cf090694435e?w=600&h=400&fit=crop&auto=format&q=80',
+      'Vrikshasana': 'https://images.unsplash.com/photo-1758274525911-402f99afec14?w=600&h=400&fit=crop&auto=format&q=80',
+      'Bhujangasana': 'https://images.unsplash.com/photo-1717821552922-61e18814a44a?w=600&h=400&fit=crop&auto=format&q=80',
+      'Setu Bandhasana': 'https://images.unsplash.com/photo-1767611086180-6b1176976371?w=600&h=400&fit=crop&auto=format&q=80',
+      'Virabhadrasana': 'https://images.unsplash.com/photo-1758599878236-47f6a918aed2?w=600&h=400&fit=crop&auto=format&q=80',
+      'Anjaneyasana': 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&h=400&fit=crop&auto=format&q=80',
+      'Paschimottanasana': 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&h=400&fit=crop&auto=format&q=80',
+      'Ardha Matsyendrasana': 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&h=400&fit=crop&auto=format&q=80',
+      'Gomukhasana': 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&h=400&fit=crop&auto=format&q=80',
+      'Garudasana': 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&h=400&fit=crop&auto=format&q=80',
+      'Supta Padangusthasana': 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&h=400&fit=crop&auto=format&q=80',
+      'Marjariasana': 'https://images.unsplash.com/photo-1758599881262-7b79a56ac284?w=600&h=400&fit=crop&auto=format&q=80',
+      'Pavanamuktasana': 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&h=400&fit=crop&auto=format&q=80',
+      'Uttanasana': 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&h=400&fit=crop&auto=format&q=80',
+      'Viparita Karani': 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600&h=400&fit=crop&auto=format&q=80',
+      'Trikonasana': 'https://images.unsplash.com/photo-1767611090899-163209a4ead1?w=600&h=400&fit=crop&auto=format&q=80',
+      'Adho Mukha Svanasana': 'https://images.unsplash.com/photo-1767611121194-3cb554c9a9ec?w=600&h=400&fit=crop&auto=format&q=80',
+      'Surya Namaskar': 'https://images.unsplash.com/photo-1606663368493-131f4f97c095?w=600&h=400&fit=crop&auto=format&q=80',
+      'Balasana': 'https://images.unsplash.com/photo-1767611118672-d3887038786c?w=600&h=400&fit=crop&auto=format&q=80',
+      'Padmasana': 'https://images.unsplash.com/photo-1577344718665-3e7c0c1ecf6b?w=600&h=400&fit=crop&auto=format&q=80',
+      'Vajrasana': 'https://images.unsplash.com/photo-1697274834392-04ff3b76ef20?w=600&h=400&fit=crop&auto=format&q=80',
+    };
     
-    setCurrentPose(randomPose);
-    setAccuracy(randomAccuracy);
-    
-    const feedbackMessages = [];
-    if (randomAccuracy < 80) {
-      feedbackMessages.push('Adjust your shoulder alignment');
-      feedbackMessages.push('Keep your spine straight');
-    } else if (randomAccuracy < 90) {
-      feedbackMessages.push('Good form! Slight adjustment needed in hip position');
-    } else {
-      feedbackMessages.push('Excellent pose! Great alignment');
+    if (directImageMap[poseName]) {
+      return directImageMap[poseName];
     }
-    setFeedback(feedbackMessages);
+    
+    const englishName = poseName.split('(')[1]?.split(')')[0]?.trim() || 
+                       poseName.split('-')[1]?.trim() || 
+                       'yoga pose';
+    
+    const searchTerm = englishName.toLowerCase()
+      .replace(/\s+/g, '%20')
+      .replace(/[^a-z0-9%]/g, '');
+    
+    return `https://source.unsplash.com/600x400/?yoga%20${searchTerm}&sig=${poseId}`;
   };
 
+  // Extract all unique poses from CategoryDetail's poseData structure
   useEffect(() => {
-    let interval;
-    if (isRunning) {
-      interval = setInterval(simulateDetection, 2000);
-    }
-    return () => clearInterval(interval);
-  }, [isRunning]);
+    // Sample poses - in production, this would be extracted from CategoryDetail's poseData
+    // For now, we'll use a representative sample that covers the main poses
+    const samplePoses = [
+      {
+        id: 1,
+        name: 'ભુજંગાસન (Bhujangasana) - Cobra Pose',
+        image: getPoseImage(1, 'Bhujangasana'),
+        description: 'A gentle backbend that strengthens the spine and opens the chest. This pose helps relieve back pain by stretching the front body and strengthening the back muscles.',
+        difficulty: 'Beginner',
+        duration: '30-60 seconds',
+        category: 'Pain Relief'
+      },
+      {
+        id: 2,
+        name: 'વીરભદ્રાસન II (Virabhadrasana II) - Warrior II',
+        image: 'https://images.unsplash.com/photo-1758599878236-47f6a918aed2?w=600&h=400&fit=crop&auto=format&q=80',
+        description: 'A powerful standing pose that strengthens the legs and opens the hips.',
+        difficulty: 'Intermediate',
+        duration: '30-60 seconds',
+        category: 'Pain Relief'
+      },
+      {
+        id: 3,
+        name: 'માર્જરીઆસન (Marjariasana) - Cat-Cow Pose',
+        image: getPoseImage(3, 'Marjariasana'),
+        description: 'A gentle flowing movement that warms up the spine.',
+        difficulty: 'Beginner',
+        duration: '1-2 minutes',
+        category: 'Pain Relief'
+      },
+      {
+        id: 4,
+        name: 'સેતુ બંધાસન (Setu Bandhasana) - Bridge Pose',
+        image: getPoseImage(4, 'Setu Bandhasana'),
+        description: 'A gentle backbend that strengthens the back muscles.',
+        difficulty: 'Beginner',
+        duration: '30-60 seconds',
+        category: 'Pain Relief'
+      },
+      {
+        id: 5,
+        name: 'ત્રિકોણાસન (Trikonasana) - Triangle Pose',
+        image: getPoseImage(14, 'Trikonasana'),
+        description: 'A standing pose that strengthens legs and relieves back pain.',
+        difficulty: 'Intermediate',
+        duration: '30-60 seconds',
+        category: 'Pain Relief'
+      },
+      {
+        id: 6,
+        name: 'તાડાસન (Tadasana) - Mountain Pose',
+        image: getPoseImage(63, 'Tadasana'),
+        description: 'A foundational standing pose that improves posture.',
+        difficulty: 'Beginner',
+        duration: '30-60 seconds',
+        category: 'Age Groups'
+      },
+      {
+        id: 7,
+        name: 'વૃક્ષાસન (Vrikshasana) - Tree Pose',
+        image: getPoseImage(64, 'Vrikshasana'),
+        description: 'A balancing pose that strengthens legs and improves focus.',
+        difficulty: 'Beginner',
+        duration: '30-60 seconds',
+        category: 'Age Groups'
+      },
+      {
+        id: 8,
+        name: 'અધો મુખ શ્વાનાસન (Adho Mukha Svanasana) - Downward-Facing Dog',
+        image: getPoseImage(15, 'Adho Mukha Svanasana'),
+        description: 'An inversion that strengthens the entire body.',
+        difficulty: 'Beginner',
+        duration: '30-60 seconds',
+        category: 'Pain Relief'
+      },
+      {
+        id: 9,
+        name: 'સૂર્ય નમસ્કાર (Surya Namaskar) - Sun Salutation',
+        image: getPoseImage(16, 'Surya Namaskar'),
+        description: 'A complete sequence of 12 poses for full-body workout.',
+        difficulty: 'Intermediate',
+        duration: '5-10 minutes',
+        category: 'Disease-Specific'
+      },
+      {
+        id: 10,
+        name: 'બાલાસન (Balasana) - Child\'s Pose',
+        image: getPoseImage(48, 'Balasana'),
+        description: 'A restorative pose that calms the mind and stretches the back.',
+        difficulty: 'Beginner',
+        duration: '1-3 minutes',
+        category: 'Disease-Specific'
+      },
+      {
+        id: 11,
+        name: 'પદ્માસન (Padmasana) - Lotus Pose',
+        image: getPoseImage(34, 'Padmasana'),
+        description: 'A seated meditation pose that promotes calmness.',
+        difficulty: 'Intermediate',
+        duration: '5-30 minutes',
+        category: 'Meditation'
+      },
+      {
+        id: 12,
+        name: 'વજ્રાસન (Vajrasana) - Thunderbolt Pose',
+        image: getPoseImage(23, 'Vajrasana'),
+        description: 'A seated pose that aids digestion and meditation.',
+        difficulty: 'Beginner',
+        duration: '5-30 minutes',
+        category: 'Disease-Specific'
+      }
+    ];
+    
+    setAllPoses(samplePoses);
+  }, []);
 
-  const getAccuracyColor = () => {
-    if (accuracy >= 90) return '#2ecc71';
-    if (accuracy >= 75) return '#f39c12';
-    return '#e74c3c';
-  };
-
-  // Enhanced filtering logic
-  const getFilteredPoses = () => {
-    if (!selectedCategory && !selectedSubCategory) {
-      return yogaPoses;
-    }
-
-    return yogaPoses.filter(pose => {
-      const categories = pose.categories || [];
-      const categoryMatch = selectedCategory 
-        ? categories.some(cat => {
-            const catId = cat.toLowerCase().replace(/\s+/g, '-');
-            return catId.includes(selectedCategory) || selectedCategory.includes(catId);
-          })
-        : true;
-      
-      const subCategoryMatch = selectedSubCategory
-        ? categories.some(cat => {
-            const catLower = cat.toLowerCase();
-            const subLower = selectedSubCategory.toLowerCase();
-            return catLower.includes(subLower) || subLower.includes(catLower);
-          })
-        : true;
-
-      return categoryMatch && subCategoryMatch;
+  const handlePoseClick = (pose) => {
+    navigate(`/pose/${pose.id}`, { 
+      state: { pose: pose } 
     });
   };
 
-  const filteredPoses = getFilteredPoses();
-
-  const handleCategorySelect = (categoryId, subCategory = null) => {
-    // Navigate to category detail page
-    const category = yogaCategories.find(c => c.id === categoryId);
-    if (category) {
-      navigate(`/category/${categoryId}`, { 
-        state: { 
-          category: category,
-          subCategory: subCategory 
-        } 
-      });
-    }
-  };
-
-  const clearFilter = () => {
-    setSelectedCategory(null);
-    setSelectedSubCategory(null);
-  };
+  const filteredPoses = allPoses.filter(pose => {
+    const matchesSearch = pose.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         pose.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesDifficulty = filterDifficulty === 'all' || 
+                              pose.difficulty.toLowerCase() === filterDifficulty.toLowerCase();
+    return matchesSearch && matchesDifficulty;
+  });
 
   return (
     <div className="pose-detection-page">
       {/* Hero Section */}
       <section className="page-hero compact">
         <div className="container">
-          <h1>Yoga Pose Detection</h1>
-          <p>Practice yoga with real-time AI feedback and posture correction</p>
+          <h1>Yoga Pose Library</h1>
+          <p>Explore and practice yoga poses with real-time AI feedback</p>
         </div>
       </section>
 
-      {/* Category Filter Section */}
-      <section className="section category-section">
+      {/* Search and Filter Section */}
+      <section className="section filter-section">
         <div className="container">
-          <div className="category-header">
-            <div className="category-title-wrapper">
-              <h2>Choose Your Yoga Category</h2>
-              <p>Select a category that matches your health goals, age, or lifestyle</p>
+          <div className="search-filter-container">
+            <div className="search-box">
+              <input
+                type="text"
+                placeholder="Search poses..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-input"
+              />
+            </div>
+            <div className="filter-box">
+              <select
+                value={filterDifficulty}
+                onChange={(e) => setFilterDifficulty(e.target.value)}
+                className="filter-select"
+              >
+                <option value="all">All Difficulties</option>
+                <option value="beginner">Beginner</option>
+                <option value="intermediate">Intermediate</option>
+                <option value="advanced">Advanced</option>
+              </select>
             </div>
           </div>
+          <p className="results-count">{filteredPoses.length} pose{filteredPoses.length !== 1 ? 's' : ''} found</p>
+        </div>
+      </section>
 
-          <div className="categories-grid">
-            {yogaCategories.map((category) => (
+      {/* Poses Grid Section */}
+      <section className="section poses-grid-section">
+        <div className="container">
+          <div className="poses-grid">
+            {filteredPoses.map((pose) => (
               <div 
-                key={category.id} 
-                className="category-card"
-                onClick={() => handleCategorySelect(category.id)}
+                key={pose.id} 
+                className="pose-card-clickable"
+                onClick={() => handlePoseClick(pose)}
               >
-                <div className="category-icon">{category.icon}</div>
-                <h3>{category.name}</h3>
-                <div className="category-subcategories">
-                  {category.subCategories.slice(0, 4).map((sub, index) => (
-                    <span key={index} className="subcategory-tag">{sub}</span>
-                  ))}
-                  {category.subCategories.length > 4 && (
-                    <span className="subcategory-more">+{category.subCategories.length - 4} more</span>
-                  )}
+                <div className="pose-image-container">
+                  <img 
+                    src={pose.image} 
+                    alt={pose.name} 
+                    className="pose-image"
+                    loading="lazy"
+                    onError={(e) => {
+                      const fallbackUrl = `https://source.unsplash.com/400x300/?yoga&sig=${pose.id}`;
+                      e.target.src = fallbackUrl;
+                    }}
+                  />
+                  <span className={`pose-difficulty-badge ${pose.difficulty.toLowerCase()}`}>
+                    {pose.difficulty}
+                  </span>
                 </div>
-                <div className="category-arrow">→</div>
+                
+                <div className="pose-content">
+                  <h3 className="pose-name">{pose.name}</h3>
+                  <p className="pose-description">{pose.description}</p>
+                  <div className="pose-meta">
+                    <span className="pose-duration">⏱ {pose.duration}</span>
+                    <span className="pose-category">{pose.category}</span>
+                  </div>
+                  <div className="pose-action">
+                    <span>View Details <FaArrowRight /></span>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
+          
+          {filteredPoses.length === 0 && (
+            <div className="no-poses-found">
+              <p>No poses found matching your search criteria.</p>
+            </div>
+          )}
         </div>
       </section>
-
-      {/* Main Detection Section */}
-      {/* <section className="section detection-section">
-        <div className="container">
-          <div className="detection-grid">
-            <div className="webcam-wrapper">
-              <div className="webcam-container">
-                {hasPermission === false ? (
-                  <div className="permission-denied">
-                    <FaExclamationTriangle />
-                    <h3>Camera Access Denied</h3>
-                    <p>Please enable camera permissions to use pose detection.</p>
-                  </div>
-                ) : (
-                  <>
-                    <Webcam
-                      ref={webcamRef}
-                      audio={false}
-                      mirrored={true}
-                      onUserMedia={handleUserMedia}
-                      onUserMediaError={handleUserMediaError}
-                      className="webcam-video"
-                      videoConstraints={{
-                        width: 640,
-                        height: 480,
-                        facingMode: "user"
-                      }}
-                    />
-                    <canvas ref={canvasRef} className="pose-canvas" />
-                    
-                    {isRunning && currentPose && (
-                      <div className="pose-overlay">
-                        <div className="pose-info-box">
-                          <div className="pose-name">
-                            <h3>{currentPose.name}</h3>
-                            <span className="difficulty">{currentPose.difficulty}</span>
-                          </div>
-                          <div className="accuracy-display">
-                            <div 
-                              className="accuracy-circle"
-                              style={{ borderColor: getAccuracyColor() }}
-                            >
-                              <span style={{ color: getAccuracyColor() }}>{accuracy}%</span>
-                            </div>
-                            <p>Accuracy</p>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
-
-              <div className="control-buttons">
-                {!isRunning ? (
-                  <button 
-                    className="btn btn-primary start-btn"
-                    onClick={startDetection}
-                    disabled={hasPermission === false}
-                  >
-                    <FaPlay /> Start Detection
-                  </button>
-                ) : (
-                  <button 
-                    className="btn btn-danger stop-btn"
-                    onClick={stopDetection}
-                  >
-                    <FaStop /> Stop Detection
-                  </button>
-                )}
-                <button className="btn btn-outline capture-btn">
-                  <FaCamera /> Capture Pose
-                </button>
-              </div>
-            </div>
-
-            <div className="detection-sidebar">
-              <div className="sidebar-panel feedback-panel">
-                <h3><FaInfoCircle /> Feedback</h3>
-                {feedback.length > 0 ? (
-                  <ul className="feedback-list">
-                    {feedback.map((msg, index) => (
-                      <li key={index} className={accuracy >= 90 ? 'success' : 'warning'}>
-                        {accuracy >= 90 ? <FaCheckCircle /> : <FaExclamationTriangle />}
-                        <span>{msg}</span>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="no-feedback">
-                    Start detection to receive real-time feedback on your poses.
-                  </p>
-                )}
-              </div>
-
-              <div className="sidebar-panel instructions-panel">
-                <h3>Instructions</h3>
-                <ul>
-                  {instructions.map((instruction, index) => (
-                    <li key={index}>{instruction}</li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="sidebar-panel poses-panel">
-                <h3>Available Poses {selectedCategory && `(${filteredPoses.length})`}</h3>
-                <div className="poses-list">
-                  {filteredPoses.length > 0 ? (
-                    filteredPoses.map((pose, index) => (
-                      <div key={index} className="pose-tag">
-                        <span className="pose-name">{pose.name}</span>
-                        <span className={`pose-difficulty ${pose.difficulty.toLowerCase()}`}>
-                          {pose.difficulty}
-                        </span>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="no-poses">No poses found for selected category. Try another filter.</p>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section> */}
 
       {/* Tips Section */}
       <section className="section tips-section gradient-bg-light">
