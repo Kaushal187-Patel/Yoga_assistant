@@ -8,7 +8,6 @@ import { FaArrowLeft, FaPlay, FaStop, FaCheckCircle, FaExclamationTriangle, FaIn
 import './PoseDetail.css';
 
 const PoseDetail = () => {
-  const { poseId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
   const webcamRef = useRef(null);
@@ -48,7 +47,6 @@ const PoseDetail = () => {
         
         // Try different MoveNet configurations
         let poseDetector = null;
-        let lastError = null;
         
         // Try 1: MoveNet Lightning with enum (if available)
         try {
@@ -63,7 +61,6 @@ const PoseDetail = () => {
           }
         } catch (e1) {
           console.warn('MoveNet Lightning (enum) failed:', e1.message);
-          lastError = e1;
           
           // Try 2: MoveNet Lightning with string
           try {
@@ -74,7 +71,6 @@ const PoseDetail = () => {
             console.log('MoveNet Lightning (string) loaded successfully');
           } catch (e2) {
             console.warn('MoveNet Lightning (string) failed:', e2.message);
-            lastError = e2;
             
             // Try 3: MoveNet Thunder
             try {
@@ -85,7 +81,6 @@ const PoseDetail = () => {
               console.log('MoveNet Thunder loaded successfully');
             } catch (e3) {
               console.warn('MoveNet Thunder failed:', e3.message);
-              lastError = e3;
               
               // Try 4: Default MoveNet (no config)
               try {
@@ -330,10 +325,6 @@ const PoseDetail = () => {
     const rightShoulder = keypoints[6];
     const leftHip = keypoints[11];
     const rightHip = keypoints[12];
-    const leftElbow = keypoints[7];
-    const rightElbow = keypoints[8];
-    const leftKnee = keypoints[13];
-    const rightKnee = keypoints[14];
 
     // Check shoulder alignment (more strict for better accuracy)
     if (leftShoulder && rightShoulder && leftShoulder.score > 0.5 && rightShoulder.score > 0.5) {
@@ -499,6 +490,8 @@ const PoseDetail = () => {
     if (isDetecting) {
       animationFrameRef.current = requestAnimationFrame(detectPose);
     }
+    // drawPose and analyzePose are stable functions that don't change between renders
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [detector, isDetecting]);
 
   // Start/stop detection

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaUser, FaEnvelope, FaCalendar, FaSignOutAlt, FaEdit, FaSave, FaTimes } from 'react-icons/fa';
+import API_BASE_URL from '../config/api';
 import './Profile.css';
-
-const API_BASE_URL = 'http://localhost:5000/api';
 
 const Profile = () => {
   const navigate = useNavigate();

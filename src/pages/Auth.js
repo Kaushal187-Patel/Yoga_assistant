@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FaEnvelope, FaLock, FaUser, FaEye, FaEyeSlash, FaGoogle, FaFacebook } from 'react-icons/fa';
 import SuccessModal from '../components/SuccessModal';
+import API_BASE_URL from '../config/api';
 import './Auth.css';
-
-const API_BASE_URL = 'http://localhost:5000/api';
 
 const Auth = () => {
   const navigate = useNavigate();

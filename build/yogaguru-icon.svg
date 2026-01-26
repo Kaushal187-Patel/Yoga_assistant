@@ -1,0 +1,36 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="yogaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667EEA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764BA2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Circle background -->
+  <circle cx="24" cy="24" r="24" fill="url(#yogaGradient)"/>
+  
+  <!-- Person in meditation/yoga pose silhouette -->
+  <g transform="translate(24, 24)">
+    <!-- Head -->
+    <circle cx="0" cy="-10" r="4" fill="white" opacity="0.95"/>
+    
+    <!-- Body (torso) -->
+    <ellipse cx="0" cy="0" rx="3" ry="8" fill="white" opacity="0.95"/>
+    
+    <!-- Arms in prayer/meditation position -->
+    <ellipse cx="-2" cy="-2" rx="1.5" ry="5" fill="white" opacity="0.95" transform="rotate(-20)"/>
+    <ellipse cx="2" cy="-2" rx="1.5" ry="5" fill="white" opacity="0.95" transform="rotate(20)"/>
+    
+    <!-- Legs in lotus/seated position -->
+    <ellipse cx="-3" cy="6" rx="2" ry="4" fill="white" opacity="0.9" transform="rotate(-30)"/>
+    <ellipse cx="3" cy="6" rx="2" ry="4" fill="white" opacity="0.9" transform="rotate(30)"/>
+  </g>
+  
+  <!-- Decorative lotus petals around -->
+  <g opacity="0.3">
+    <circle cx="24" cy="8" r="2" fill="white"/>
+    <circle cx="24" cy="40" r="2" fill="white"/>
+    <circle cx="8" cy="24" r="2" fill="white"/>
+    <circle cx="40" cy="24" r="2" fill="white"/>
+  </g>
+</svg>

@@ -238,6 +238,33 @@ Each pose includes:
 
 ---
 
+## 🚀 Deployment
+
+This application can be deployed using various platforms. See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
+
+### Quick Deploy Options:
+
+1. **Vercel (Frontend) + Railway (Backend)** - Recommended for easy setup
+2. **Heroku** - Full-stack deployment
+3. **Docker** - Containerized deployment
+4. **Netlify (Frontend) + Render (Backend)** - Alternative option
+
+### Environment Variables Required:
+
+**Frontend:**
+- `REACT_APP_API_URL` - Backend API URL
+
+**Backend:**
+- `DATABASE_URL` - PostgreSQL connection string
+- `JWT_SECRET` - Secret key for JWT tokens
+- `CORS_ORIGIN` - Frontend URL for CORS
+- `PORT` - Server port (default: 5000)
+- `NODE_ENV` - Environment (production/development)
+
+See `.env.example` and `backend/.env.example` for reference.
+
+---
+
 ## 📄 License
 
 All yoga pose images are sourced from Unsplash and are free to use under the Unsplash License.

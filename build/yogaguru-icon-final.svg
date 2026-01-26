@@ -1,0 +1,39 @@
+<svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="yogaGradientFinal" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667EEA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764BA2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Circle background with gradient -->
+  <circle cx="24" cy="24" r="24" fill="url(#yogaGradientFinal)"/>
+  
+  <!-- Person in tree pose (Vrikshasana) - standing on one leg -->
+  <g transform="translate(24, 24)">
+    <!-- Head -->
+    <circle cx="0" cy="-12" r="3.5" fill="white" opacity="0.95"/>
+    
+    <!-- Torso -->
+    <rect x="-2.5" y="-8" width="5" height="10" rx="2.5" fill="white" opacity="0.95"/>
+    
+    <!-- Standing leg (left) -->
+    <rect x="-1.5" y="2" width="3" height="8" rx="1.5" fill="white" opacity="0.95"/>
+    
+    <!-- Raised leg (right) - bent at knee -->
+    <path d="M 1.5 2 Q 4 0 6 4 Q 4 6 1.5 4" fill="white" opacity="0.95"/>
+    
+    <!-- Arms in prayer position (Anjali Mudra) -->
+    <ellipse cx="-3" cy="-4" rx="1.5" ry="4" fill="white" opacity="0.95" transform="rotate(-15)"/>
+    <ellipse cx="3" cy="-4" rx="1.5" ry="4" fill="white" opacity="0.95" transform="rotate(15)"/>
+    
+    <!-- Hands together -->
+    <circle cx="0" cy="-2" r="2" fill="white" opacity="0.9"/>
+  </g>
+  
+  <!-- Decorative elements - small circles representing energy/chakras -->
+  <circle cx="24" cy="6" r="1.5" fill="white" opacity="0.5"/>
+  <circle cx="24" cy="42" r="1.5" fill="white" opacity="0.5"/>
+  <circle cx="6" cy="24" r="1.5" fill="white" opacity="0.5"/>
+  <circle cx="42" cy="24" r="1.5" fill="white" opacity="0.5"/>
+</svg>
