@@ -1,0 +1,36 @@
+# Render Blueprint - YogaGuru Full Stack Deployment
+# This file defines all services needed for the application
+
+databases:
+  # PostgreSQL Database
+  - name: yogaguru-db
+    databaseName: yoga_guru
+    user: yoga_user
+    plan: free
+    region: oregon
+
+services:
+  # Web Service (Backend + Frontend)
+  - type: web
+    name: yogaguru
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm install && npm run build && cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGIN
+        value: https://yogaguru.onrender.com
+      - key: DATABASE_URL
+        fromDatabase:
+          name: yogaguru-db
+          property: connectionString
+      - key: REACT_APP_API_URL
+        value: /api
+    healthCheckPath: /api/health
