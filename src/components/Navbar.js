@@ -65,6 +65,15 @@ const Navbar = () => {
         </Link>
 
         <div className={`navbar-menu ${isOpen ? 'active' : ''}`}>
+          {/* Close button for mobile menu */}
+          <button 
+            className="navbar-close"
+            onClick={() => setIsOpen(false)}
+            aria-label="Close navigation"
+          >
+            <FaTimes />
+          </button>
+
           <ul className="navbar-links">
             {navLinks.map((link) => (
               <li key={link.path}>
@@ -76,6 +85,33 @@ const Navbar = () => {
                 </Link>
               </li>
             ))}
+            {/* Login/Profile in mobile menu */}
+            <li className="mobile-auth-link">
+              {isLoggedIn ? (
+                <>
+                  <Link to="/profile" className="mobile-profile-link">
+                    <FaUser /> {user?.name || 'Profile'}
+                  </Link>
+                  <button
+                    className="mobile-logout-btn"
+                    onClick={() => {
+                      localStorage.removeItem('token');
+                      localStorage.removeItem('user');
+                      setIsLoggedIn(false);
+                      setUser(null);
+                      navigate('/');
+                      window.location.reload();
+                    }}
+                  >
+                    <FaSignOutAlt /> Logout
+                  </button>
+                </>
+              ) : (
+                <Link to="/login" className="mobile-login-link">
+                  <FaUser /> Login
+                </Link>
+              )}
+            </li>
           </ul>
 
           <div className="navbar-mobile-footer">

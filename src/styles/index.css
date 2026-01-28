@@ -759,6 +759,46 @@ p {
   }
 }
 
+/* Extra small screens - 320px to 400px */
+@media (max-width: 400px) {
+  .container {
+    padding: 0 10px;
+  }
+
+  .section {
+    padding: 60px 0;
+  }
+
+  .section-title h2 {
+    font-size: var(--font-xl);
+  }
+
+  .section-title span {
+    font-size: var(--font-xs);
+  }
+
+  .btn {
+    padding: 10px 20px;
+    font-size: var(--font-sm);
+  }
+
+  h1 {
+    font-size: var(--font-2xl) !important;
+  }
+
+  h2 {
+    font-size: var(--font-xl);
+  }
+
+  .page-hero h1 {
+    font-size: var(--font-2xl);
+  }
+
+  .page-hero p {
+    font-size: var(--font-sm);
+  }
+}
+
 /* ========== LINK & TEXT ANIMATIONS ========== */
 .link-hover {
   position: relative;
