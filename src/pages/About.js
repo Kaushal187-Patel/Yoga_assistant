@@ -71,13 +71,13 @@ const About = () => {
       <section className="section">
         <div className="container">
           <div className="content-grid">
-            <div className="content-image">
+            <div className="content-image scroll-animate-left">
               <img 
                 src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600" 
                 alt="Yoga Practice"
               />
             </div>
-            <div className="content-text">
+            <div className="content-text scroll-animate-right">
               <h2>The Art of Yoga</h2>
               <p>
                 Yoga is an ancient practice that originated in India over 5,000 years ago. 
@@ -102,11 +102,11 @@ const About = () => {
       {/* Benefits of Yoga */}
       <section className="section benefits-section gradient-bg-light">
         <div className="container">
-          <div className="section-title">
+          <div className="section-title scroll-animate">
             <span>Why Practice Yoga</span>
             <h2>Benefits of Regular Practice</h2>
           </div>
-          <div className="benefits-grid">
+          <div className="benefits-grid stagger-children">
             {yogaBenefits.map((benefit, index) => (
               <div key={index} className="benefit-card card">
                 <div className="icon-box">
@@ -124,7 +124,7 @@ const About = () => {
       <section className="section">
         <div className="container">
           <div className="content-grid reverse">
-            <div className="content-text">
+            <div className="content-text scroll-animate-left">
               <h2>Importance of Correct Posture</h2>
               <p>
                 Proper alignment in yoga poses is crucial for maximizing benefits and 
@@ -142,7 +142,7 @@ const About = () => {
                 <span>Proper alignment can increase the effectiveness of your practice by up to 40%</span>
               </div>
             </div>
-            <div className="content-image">
+            <div className="content-image scroll-animate-right">
               <img 
                 src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=600" 
                 alt="Correct Yoga Posture"
@@ -155,11 +155,11 @@ const About = () => {
       {/* Problems with Incorrect Practice */}
       <section className="section problems-section">
         <div className="container">
-          <div className="section-title">
+          <div className="section-title scroll-animate">
             <span>Understanding the Risks</span>
             <h2>Problems with Incorrect Yoga Practice</h2>
           </div>
-          <div className="problems-content">
+          <div className="problems-content scroll-animate">
             <div className="problems-image">
               <FaExclamationTriangle className="warning-icon" />
             </div>
@@ -189,7 +189,7 @@ const About = () => {
       <section className="section ai-section gradient-bg-light">
         <div className="container">
           <div className="content-grid">
-            <div className="content-text">
+            <div className="content-text scroll-animate-left">
               <span className="section-label">Technology Meets Tradition</span>
               <h2>How AI Helps in Yoga Training</h2>
               <p>
@@ -207,7 +207,7 @@ const About = () => {
                 ))}
               </ul>
             </div>
-            <div className="content-visual">
+            <div className="content-visual scroll-animate-right">
               <div className="ai-visual-card">
                 <div className="ai-icon">
                   <FaRobot />
@@ -224,7 +224,7 @@ const About = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="cta-section">
+      <section className="cta-section scroll-animate-scale">
         <div className="container">
           <h2>Ready to Transform Your Practice?</h2>
           <p>Start your AI-guided yoga journey today and experience the difference.</p>
@@ -232,7 +232,7 @@ const About = () => {
             <Link to="/pose-detection" className="btn btn-primary">
               Try Pose Detection
             </Link>
-            <Link to="/features" className="btn btn-outline">
+            <Link to="/project-info" className="btn btn-outline">
               Explore Features
             </Link>
           </div>

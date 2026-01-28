@@ -73,8 +73,8 @@ const Home = () => {
   ];
 
   const yogaPoses = [
-    'Halasana', 'Sarvangasana', 'Padmasana', 'Mudrasana', 'Chakrasana',
-    'Bhujangasana', 'Tadasana', 'Dhanurasana', 'Vajrasana', 'Garudasana'
+    'Tadasana', 'Virabhadrasana II', 'Padmasana', 'Bhujangasana', 'Chakrasana',
+    'Dhanurasana', 'Vajrasana', 'Halasana', 'Sarvangasana', 'Garudasana'
   ];
 
   const faqs = [
@@ -171,20 +171,23 @@ const Home = () => {
             </div>
           </div>
         </div>
-        <div className="scroll-indicator">
-          <FaChevronDown />
-        </div>
       </section>
 
       {/* Yoga Poses Marquee */}
       <section className="yoga-marquee">
-        <div className="marquee-content">
-          <div className="marquee-inner">
+        <div className="marquee-track">
+          <div className="marquee-content">
             {yogaPoses.map((pose, index) => (
-              <span key={index}>{pose}</span>
+              <div key={index} className="pose-item">
+                <span className="pose-name">{pose}</span>
+                <span className="pose-dot"></span>
+              </div>
             ))}
             {yogaPoses.map((pose, index) => (
-              <span key={`dup-${index}`}>{pose}</span>
+              <div key={`dup-${index}`} className="pose-item">
+                <span className="pose-name">{pose}</span>
+                <span className="pose-dot"></span>
+              </div>
             ))}
           </div>
         </div>
@@ -194,13 +197,13 @@ const Home = () => {
       <section className="section about-home gradient-bg-light">
         <div className="container">
           <div className="about-grid">
-            <div className="about-image">
+            <div className="about-image scroll-animate-left">
               <img 
                 src="https://i.pinimg.com/originals/56/42/db/5642dbe39105d8cfd0d90fc5be597eb8.jpg" 
                 alt="Yoga Practice" 
               />
             </div>
-            <div className="about-content">
+            <div className="about-content scroll-animate-right">
               <span>About Us</span>
               <h2>YogaGuru</h2>
               <p>
@@ -225,11 +228,11 @@ const Home = () => {
       {/* Benefits Section */}
       <section className="section benefits">
         <div className="container">
-          <div className="section-title">
+          <div className="section-title scroll-animate">
             <span>Why Choose YogaGuru</span>
             <h2>Benefits of AI-Powered Yoga</h2>
           </div>
-          <div className="benefits-grid">
+          <div className="benefits-grid stagger-children">
             {benefits.map((benefit, index) => (
               <div key={index} className="benefit-card card">
                 <div className="icon-box">
@@ -244,7 +247,7 @@ const Home = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="cta-section">
+      <section className="cta-section scroll-animate-scale">
         <div className="container">
           <div className="cta-content">
             <div className="cta-text">
@@ -263,11 +266,11 @@ const Home = () => {
       {/* FAQ Section */}
       <section className="section faq-section">
         <div className="container">
-          <div className="section-title">
+          <div className="section-title scroll-animate">
             <span>Common Questions</span>
             <h2>Frequently Asked Questions</h2>
           </div>
-          <div className="accordion">
+          <div className="accordion scroll-animate">
             {faqs.map((faq, index) => (
               <div 
                 key={index} 
@@ -290,7 +293,7 @@ const Home = () => {
       </section>
 
       {/* Quote Section */}
-      <section className="quote-section">
+      <section className="quote-section scroll-animate-scale">
         <div className="container">
           <blockquote>
             "Yoga for Every Body, Every Journey."

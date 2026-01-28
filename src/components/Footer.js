@@ -44,7 +44,7 @@ const Footer = () => {
             <ul>
               <li><Link to="/">Home</Link></li>
               <li><Link to="/about">About Yoga</Link></li>
-              <li><Link to="/features">Features</Link></li>
+              <li><Link to="/project-info">Project Info</Link></li>
               <li><Link to="/pose-detection">Pose Detection</Link></li>
             </ul>
           </div>
@@ -52,10 +52,8 @@ const Footer = () => {
           <div className="footer-links">
             <h4>Resources</h4>
             <ul>
-              <li><Link to="/how-it-works">How It Works</Link></li>
-              <li><Link to="/tech-stack">Technology</Link></li>
-              <li><Link to="/results">Results</Link></li>
               <li><Link to="/team">Our Team</Link></li>
+              <li><Link to="/contact">Contact Us</Link></li>
             </ul>
           </div>
 

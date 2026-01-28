@@ -3684,7 +3684,7 @@ const CategoryDetail = () => {
               </div>
             )}
 
-            <div className="poses-grid">
+            <div className="poses-grid stagger-children">
               {filteredPoses.map((pose) => (
                 <div 
                   key={pose.id} 

@@ -232,55 +232,90 @@
   }
 }
 
-.scroll-indicator {
-  position: absolute;
-  bottom: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  animation: bounce 2s infinite;
-  color: var(--primary-color);
-  font-size: var(--font-xl);
-}
-
-@keyframes bounce {
-  0%, 20%, 50%, 80%, 100% {
-    transform: translateX(-50%) translateY(0);
-  }
-  40% {
-    transform: translateX(-50%) translateY(-10px);
-  }
-  60% {
-    transform: translateX(-50%) translateY(-5px);
-  }
-}
-
-/* Yoga Marquee */
+/* Yoga Marquee - Enhanced Design */
 .yoga-marquee {
-  background: var(--text-dark);
-  padding: 20px 0;
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-color) 50%, var(--primary-dark) 100%);
+  padding: 30px 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.yoga-marquee::before,
+.yoga-marquee::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 150px;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.yoga-marquee::before {
+  left: 0;
+  background: linear-gradient(to right, var(--primary-dark), transparent);
+}
+
+.yoga-marquee::after {
+  right: 0;
+  background: linear-gradient(to left, var(--primary-dark), transparent);
+}
+
+.marquee-track {
   overflow: hidden;
 }
 
 .marquee-content {
-  overflow: hidden;
-}
-
-.marquee-inner {
   display: flex;
-  animation: marquee 30s linear infinite;
+  animation: marquee 25s linear infinite;
+  width: max-content;
 }
 
-.marquee-inner span {
-  font-size: var(--font-4xl);
-  font-weight: 700;
-  color: var(--white);
-  white-space: nowrap;
+.marquee-content:hover {
+  animation-play-state: paused;
+}
+
+.pose-item {
+  display: flex;
+  align-items: center;
+  gap: 30px;
   padding: 0 30px;
 }
 
-.marquee-inner span::after {
-  content: ' — ';
-  color: var(--primary-color);
+.pose-name {
+  font-size: var(--font-3xl);
+  font-weight: 700;
+  color: var(--white);
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  transition: all 0.3s ease;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.pose-item:hover .pose-name {
+  color: var(--secondary-color);
+  transform: scale(1.05);
+}
+
+.pose-dot {
+  width: 12px;
+  height: 12px;
+  background: linear-gradient(135deg, var(--secondary-color), #f8e9a1);
+  border-radius: 50%;
+  box-shadow: 0 0 15px var(--secondary-color), 0 0 30px rgba(159, 197, 167, 0.5);
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 10px var(--secondary-color), 0 0 20px rgba(159, 197, 167, 0.3);
+    transform: scale(1);
+  }
+  to {
+    box-shadow: 0 0 20px var(--secondary-color), 0 0 40px rgba(159, 197, 167, 0.6);
+    transform: scale(1.2);
+  }
 }
 
 @keyframes marquee {
@@ -479,9 +514,24 @@
     grid-template-columns: 1fr;
   }
 
-  .marquee-inner span {
-    font-size: var(--font-2xl);
-    padding: 0 15px;
+  .pose-name {
+    font-size: var(--font-xl);
+    letter-spacing: 2px;
+  }
+
+  .pose-item {
+    gap: 20px;
+    padding: 0 20px;
+  }
+
+  .pose-dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .yoga-marquee::before,
+  .yoga-marquee::after {
+    width: 80px;
   }
 
   .insight-cards {

@@ -75,7 +75,7 @@ const Contact = () => {
         <div className="container">
           <div className="contact-grid">
             {/* Contact Form */}
-            <div className="contact-form-wrapper">
+            <div className="contact-form-wrapper scroll-animate-left">
               <h2>Send us a Message</h2>
               
               {isSubmitted ? (
@@ -157,7 +157,7 @@ const Contact = () => {
             </div>
 
             {/* Contact Info */}
-            <div className="contact-info-wrapper">
+            <div className="contact-info-wrapper scroll-animate-right">
               <h2>Contact Information</h2>
               <p>
                 Reach out to us through any of the following channels. 
@@ -197,7 +197,7 @@ const Contact = () => {
       </section>
 
       {/* FAQ CTA */}
-      <section className="section faq-cta gradient-bg-light">
+      <section className="section faq-cta gradient-bg-light scroll-animate-scale">
         <div className="container text-center">
           <h2>Frequently Asked Questions</h2>
           <p>

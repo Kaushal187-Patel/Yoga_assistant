@@ -54,12 +54,12 @@ const Team = () => {
       {/* Team Members */}
       <section className="section team-section">
         <div className="container">
-          <div className="section-title">
+          <div className="section-title scroll-animate">
             <span>Students</span>
             <h2>Our Team</h2>
           </div>
 
-          <div className="team-grid">
+          <div className="team-grid stagger-children">
             {teamMembers.map((member, index) => (
               <div key={index} className="team-card">
                 <div className="member-image">
@@ -97,7 +97,7 @@ const Team = () => {
       {/* College Info */}
       <section className="section college-section">
         <div className="container">
-          <div className="college-card">
+          <div className="college-card scroll-animate-scale">
             <h2>{collegeInfo.name}</h2>
             <p className="department">{collegeInfo.department}</p>
             <p className="address">{collegeInfo.address}</p>
@@ -109,10 +109,10 @@ const Team = () => {
       {/* Acknowledgments */}
       <section className="section acknowledgments-section gradient-bg-light">
         <div className="container">
-          <div className="section-title">
+          <div className="section-title scroll-animate">
             <h2>Acknowledgments</h2>
           </div>
-          <div className="acknowledgment-content">
+          <div className="acknowledgment-content scroll-animate">
             <p>
               We extend our sincere gratitude to our project guide for their invaluable
               guidance and support throughout the development of this project. We also
