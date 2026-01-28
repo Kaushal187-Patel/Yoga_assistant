@@ -30,17 +30,25 @@ router.post('/', async (req, res) => {
       return res.status(400).json({ error: 'Invalid email format' });
     }
 
-    // Save to database
-    const result = await pool.query(
-      `INSERT INTO contact_messages (name, email, subject, message, status, created_at) 
-       VALUES ($1, $2, $3, $4, 'pending', CURRENT_TIMESTAMP) 
-       RETURNING id, created_at`,
-      [name, email, subject || 'No Subject', message]
-    );
+    let savedMessage = { id: Date.now() }; // Default ID if DB fails
+    let dbSuccess = false;
 
-    const savedMessage = result.rows[0];
+    // Try to save to database (but don't fail if DB is not available)
+    try {
+      const result = await pool.query(
+        `INSERT INTO contact_messages (name, email, subject, message, status, created_at) 
+         VALUES ($1, $2, $3, $4, 'pending', CURRENT_TIMESTAMP) 
+         RETURNING id, created_at`,
+        [name, email, subject || 'No Subject', message]
+      );
+      savedMessage = result.rows[0];
+      dbSuccess = true;
+    } catch (dbError) {
+      console.error('Database save failed (continuing with email):', dbError.message);
+    }
 
     // Send email notification
+    let emailSuccess = false;
     try {
       const transporter = createTransporter();
       
@@ -122,27 +130,32 @@ router.post('/', async (req, res) => {
         `
       };
 
-      // Send emails (don't wait for them to complete)
+      // Send emails
       if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-        transporter.sendMail(adminMailOptions).catch(err => {
-          console.error('Failed to send admin email:', err.message);
-        });
+        await transporter.sendMail(adminMailOptions);
+        console.log('Admin notification email sent successfully');
         
-        transporter.sendMail(userMailOptions).catch(err => {
-          console.error('Failed to send user confirmation email:', err.message);
-        });
+        await transporter.sendMail(userMailOptions);
+        console.log('User confirmation email sent successfully');
+        
+        emailSuccess = true;
       } else {
         console.log('Email credentials not configured. Skipping email notifications.');
       }
     } catch (emailError) {
       console.error('Email sending error:', emailError.message);
-      // Don't fail the request if email fails - message is already saved
     }
 
+    // Log message details for debugging
+    console.log('Contact form submission:', { name, email, subject, dbSuccess, emailSuccess });
+
+    // Always return success - message was received
     res.status(201).json({
       success: true,
       message: 'Thank you for contacting us! We will get back to you soon.',
-      id: savedMessage.id
+      id: savedMessage.id,
+      stored: dbSuccess,
+      emailed: emailSuccess
     });
   } catch (error) {
     console.error('Contact form error:', error);
