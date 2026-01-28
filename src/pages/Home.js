@@ -180,13 +180,11 @@ const Home = () => {
             {yogaPoses.map((pose, index) => (
               <div key={index} className="pose-item">
                 <span className="pose-name">{pose}</span>
-                <span className="pose-dot"></span>
               </div>
             ))}
             {yogaPoses.map((pose, index) => (
               <div key={`dup-${index}`} className="pose-item">
                 <span className="pose-name">{pose}</span>
-                <span className="pose-dot"></span>
               </div>
             ))}
           </div>

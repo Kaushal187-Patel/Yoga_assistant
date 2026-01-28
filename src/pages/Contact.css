@@ -126,6 +126,30 @@
   color: var(--text-gray);
 }
 
+/* Error Message */
+.error-message {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px 20px;
+  background: #fdeaea;
+  border: 1px solid #e74c3c;
+  border-radius: var(--radius-sm);
+  margin-bottom: 20px;
+}
+
+.error-message svg {
+  font-size: 20px;
+  color: #e74c3c;
+  flex-shrink: 0;
+}
+
+.error-message p {
+  color: #c0392b;
+  margin: 0;
+  font-size: var(--font-sm);
+}
+
 /* Contact Info */
 .contact-info-wrapper h2 {
   font-size: var(--font-2xl);

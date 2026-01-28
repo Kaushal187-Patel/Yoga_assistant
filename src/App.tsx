@@ -42,23 +42,29 @@ const App: React.FC = () => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
-  // Scroll animation observer with MutationObserver for dynamic content
+  // Scroll animation observer - triggers on both scroll up and down
   useEffect(() => {
     const observerOptions = {
       root: null,
-      rootMargin: '0px',
-      threshold: 0.1
+      rootMargin: '-50px 0px',
+      threshold: 0.15
     };
 
     const intersectionObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
+          // Add visible class when entering viewport
           entry.target.classList.add('visible');
+          entry.target.classList.remove('hidden');
+        } else {
+          // Remove visible class when leaving viewport (for re-animation)
+          entry.target.classList.remove('visible');
+          entry.target.classList.add('hidden');
         }
       });
     }, observerOptions);
 
-    const animationSelectors = '.scroll-animate, .scroll-animate-left, .scroll-animate-right, .scroll-animate-scale, .stagger-children';
+    const animationSelectors = '.scroll-animate, .scroll-animate-left, .scroll-animate-right, .scroll-animate-scale, .stagger-children, .fade-up, .fade-down, .fade-left, .fade-right, .zoom-in';
 
     // Function to observe elements
     const observeElements = () => {

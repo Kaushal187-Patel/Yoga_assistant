@@ -6,7 +6,7 @@ const Team = () => {
     {
       name: 'Keraliya Kaushal',
       role: 'Project Lead',
-      department: 'Computer Science',
+      department: 'Computer Engineering',
       image: '/TeamImage/Kaushal.png',
       description: 'Responsible for project management, system architecture, and frontend development.',
       links: {
@@ -18,24 +18,29 @@ const Team = () => {
     {
       name: 'Mankad Drashti',
       role: 'ML Developer',
-      department: 'Computer Science',
+      department: 'Computer Engineering',
       image: '/TeamImage/drashti.jpg',
       description: 'Specialized in machine learning model development and pose estimation algorithms.',
       links: {
         github: 'https://github.com',
         linkedin: 'https://linkedin.com',
         email: 'student2@email.com'
-      },
+      }
+    },
+    {
+      name: 'Kaneriya Hasti',
+      role: 'Frontend Developer',
+      department: 'Computer Engineering',
+      image: '/TeamImage/hasti.jpg',
+      description: 'Contributed to development and implementation of the yoga pose detection platform.',
+      links: {
+        github: 'https://github.com',
+        linkedin: 'https://linkedin.com',
+        email: 'hasti@email.com'
+      }
     }
   ];
 
-
-  const collegeInfo = {
-    name: 'Your College Name',
-    department: 'Department of Computer Science',
-    address: 'College Address, City, State - PIN',
-    year: '2024-2025'
-  };
 
   return (
     <div className="team-page">
@@ -94,17 +99,6 @@ const Team = () => {
         </div>
       </section>
 
-      {/* College Info */}
-      <section className="section college-section">
-        <div className="container">
-          <div className="college-card scroll-animate-scale">
-            <h2>{collegeInfo.name}</h2>
-            <p className="department">{collegeInfo.department}</p>
-            <p className="address">{collegeInfo.address}</p>
-            <p className="year">Academic Year: {collegeInfo.year}</p>
-          </div>
-        </div>
-      </section>
 
       {/* Acknowledgments */}
       <section className="section acknowledgments-section gradient-bg-light">

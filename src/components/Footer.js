@@ -62,15 +62,15 @@ const Footer = () => {
             <ul>
               <li>
                 <span>Email:</span>
-                <a href="mailto:contact@yogaguru.com">contact@yogaguru.com</a>
+                <a href="mailto:kaushal151131@gmail.com">kaushal151131@gmail.com</a>
               </li>
               <li>
                 <span>Phone:</span>
-                <a href="tel:+919265300000">+91 92653 00000</a>
+                <a href="tel:+919265327760">+91 92653 27760</a>
               </li>
               <li>
                 <span>Address:</span>
-                <p>Your College Name, City, State</p>
+                <p>Gandhinagar, Gujarat, India - 382016</p>
               </li>
             </ul>
           </div>
