@@ -1,22 +1,23 @@
-import React, { useEffect, useState } from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import Home from './pages/Home';
-import About from './pages/About';
-import ProjectInfo from './pages/ProjectInfo';
-import PoseDetection from './pages/PoseDetection';
-import Team from './pages/Team';
-import Contact from './pages/Contact';
-import Auth from './pages/Auth';
-import Profile from './pages/Profile';
-import CategoryDetail from './pages/CategoryDetail';
-import PoseDetail from './pages/PoseDetail';
-import './styles/index.css';
+import React, { useEffect, useState } from "react";
+import { Route, Routes, useLocation } from "react-router-dom";
+import Footer from "./components/Footer";
+import Navbar from "./components/Navbar";
+import About from "./pages/About";
+import Auth from "./pages/Auth";
+import BasicWarmupExercises from "./pages/BasicWarmupExercises";
+import CategoryDetail from "./pages/CategoryDetail";
+import Contact from "./pages/Contact";
+import Home from "./pages/Home";
+import PoseDetail from "./pages/PoseDetail";
+import PoseDetection from "./pages/PoseDetection";
+import Profile from "./pages/Profile";
+import ProjectInfo from "./pages/ProjectInfo";
+import Team from "./pages/Team";
+import "./styles/index.css";
 
 // Preloader Component
 const Preloader: React.FC<{ isLoading: boolean }> = ({ isLoading }) => (
-  <div className={`preloader ${!isLoading ? 'hidden' : ''}`}>
+  <div className={`preloader ${!isLoading ? "hidden" : ""}`}>
     <div className="loader">
       <span></span>
       <span></span>
@@ -46,32 +47,33 @@ const App: React.FC = () => {
   useEffect(() => {
     const observerOptions = {
       root: null,
-      rootMargin: '-50px 0px',
-      threshold: 0.15
+      rootMargin: "-50px 0px",
+      threshold: 0.15,
     };
 
     const intersectionObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
+      entries.forEach((entry) => {
         if (entry.isIntersecting) {
           // Add visible class when entering viewport
-          entry.target.classList.add('visible');
-          entry.target.classList.remove('hidden');
+          entry.target.classList.add("visible");
+          entry.target.classList.remove("hidden");
         } else {
           // Remove visible class when leaving viewport (for re-animation)
-          entry.target.classList.remove('visible');
-          entry.target.classList.add('hidden');
+          entry.target.classList.remove("visible");
+          entry.target.classList.add("hidden");
         }
       });
     }, observerOptions);
 
-    const animationSelectors = '.scroll-animate, .scroll-animate-left, .scroll-animate-right, .scroll-animate-scale, .stagger-children, .fade-up, .fade-down, .fade-left, .fade-right, .zoom-in';
+    const animationSelectors =
+      ".scroll-animate, .scroll-animate-left, .scroll-animate-right, .scroll-animate-scale, .stagger-children, .fade-up, .fade-down, .fade-left, .fade-right, .zoom-in";
 
     // Function to observe elements
     const observeElements = () => {
       const animateElements = document.querySelectorAll(animationSelectors);
-      animateElements.forEach(el => {
-        if (!el.hasAttribute('data-observed')) {
-          el.setAttribute('data-observed', 'true');
+      animateElements.forEach((el) => {
+        if (!el.hasAttribute("data-observed")) {
+          el.setAttribute("data-observed", "true");
           intersectionObserver.observe(el);
         }
       });
@@ -87,7 +89,7 @@ const App: React.FC = () => {
 
     mutationObserver.observe(document.body, {
       childList: true,
-      subtree: true
+      subtree: true,
     });
 
     return () => {
@@ -113,6 +115,10 @@ const App: React.FC = () => {
             <Route path="/login" element={<Auth />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/category/:categoryId" element={<CategoryDetail />} />
+            <Route
+              path="/warmup-exercises"
+              element={<BasicWarmupExercises />}
+            />
           </Routes>
         </main>
         <Footer />

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { FaBars, FaGithub, FaInstagram, FaLinkedin, FaSignOutAlt, FaTimes, FaUser, FaWhatsapp } from 'react-icons/fa';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { FaBars, FaTimes, FaGithub, FaLinkedin, FaInstagram, FaWhatsapp, FaUser, FaSignOutAlt } from 'react-icons/fa';
 import './Navbar.css';
 
 const Navbar = () => {
@@ -46,6 +46,7 @@ const Navbar = () => {
   const navLinks = [
     { path: '/', label: 'Home' },
     { path: '/about', label: 'About' },
+    { path: '/warmup-exercises', label: 'Warmup' },
     { path: '/project-info', label: 'Project Info' },
     { path: '/pose-detection', label: 'Pose Detection' },
     { path: '/team', label: 'Team' },
