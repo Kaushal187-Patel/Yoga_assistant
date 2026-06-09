@@ -1,4 +1,9 @@
 const jwt = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET environment variable is required');
+}
 
 const authMiddleware = (req, res, next) => {
   try {
@@ -18,7 +23,7 @@ const authMiddleware = (req, res, next) => {
     const token = parts[1];
 
     // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+    const decoded = jwt.verify(token, JWT_SECRET);
     
     // Add user ID to request
     req.userId = decoded.userId;

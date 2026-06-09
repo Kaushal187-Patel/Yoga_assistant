@@ -2,6 +2,24 @@ const express = require('express');
 const router = express.Router();
 const nodemailer = require('nodemailer');
 const { pool } = require('../config/database');
+const authMiddleware = require('../middleware/auth');
+const requireRole = require('../middleware/requireRole');
+
+const ADMIN_EMAIL = process.env.ADMIN_EMAIL || process.env.EMAIL_USER;
+const ALLOWED_MESSAGE_STATUSES = new Set(['pending', 'read', 'replied', 'archived']);
+
+const escapeHtml = (value = '') => {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+};
+
+const sanitizeText = (value, maxLength = 1000) => {
+  return String(value || '').trim().slice(0, maxLength);
+};
 
 // Configure email transporter
 const createTransporter = () => {
@@ -18,15 +36,19 @@ const createTransporter = () => {
 router.post('/', async (req, res) => {
   try {
     const { name, email, subject, message } = req.body;
+    const sanitizedName = sanitizeText(name, 100);
+    const sanitizedEmail = sanitizeText(email, 255).toLowerCase();
+    const sanitizedSubject = sanitizeText(subject || 'No Subject', 255);
+    const sanitizedMessage = sanitizeText(message, 5000);
 
     // Validation
-    if (!name || !email || !message) {
+    if (!sanitizedName || !sanitizedEmail || !sanitizedMessage) {
       return res.status(400).json({ error: 'Name, email, and message are required' });
     }
 
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!emailRegex.test(sanitizedEmail)) {
       return res.status(400).json({ error: 'Invalid email format' });
     }
 
@@ -39,7 +61,7 @@ router.post('/', async (req, res) => {
         `INSERT INTO contact_messages (name, email, subject, message, status, created_at) 
          VALUES ($1, $2, $3, $4, 'pending', CURRENT_TIMESTAMP) 
          RETURNING id, created_at`,
-        [name, email, subject || 'No Subject', message]
+        [sanitizedName, sanitizedEmail, sanitizedSubject, sanitizedMessage]
       );
       savedMessage = result.rows[0];
       dbSuccess = true;
@@ -55,8 +77,8 @@ router.post('/', async (req, res) => {
       // Email to admin (you)
       const adminMailOptions = {
         from: process.env.EMAIL_USER,
-        to: 'kaushal151131@gmail.com',
-        subject: `New Contact Form Submission: ${subject || 'No Subject'}`,
+        to: ADMIN_EMAIL,
+        subject: `New Contact Form Submission: ${sanitizedSubject}`,
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="background: linear-gradient(135deg, #a177b4 0%, #9fc5a7 100%); padding: 20px; border-radius: 10px 10px 0 0;">
@@ -66,21 +88,21 @@ router.post('/', async (req, res) => {
               <h2 style="color: #333; border-bottom: 2px solid #a177b4; padding-bottom: 10px;">New Message Received</h2>
               
               <div style="margin: 20px 0;">
-                <p style="margin: 5px 0;"><strong style="color: #a177b4;">From:</strong> ${name}</p>
-                <p style="margin: 5px 0;"><strong style="color: #a177b4;">Email:</strong> ${email}</p>
-                <p style="margin: 5px 0;"><strong style="color: #a177b4;">Subject:</strong> ${subject || 'No Subject'}</p>
+                <p style="margin: 5px 0;"><strong style="color: #a177b4;">From:</strong> ${escapeHtml(sanitizedName)}</p>
+                <p style="margin: 5px 0;"><strong style="color: #a177b4;">Email:</strong> ${escapeHtml(sanitizedEmail)}</p>
+                <p style="margin: 5px 0;"><strong style="color: #a177b4;">Subject:</strong> ${escapeHtml(sanitizedSubject)}</p>
                 <p style="margin: 5px 0;"><strong style="color: #a177b4;">Date:</strong> ${new Date().toLocaleString()}</p>
               </div>
               
               <div style="background: white; padding: 20px; border-radius: 8px; border-left: 4px solid #a177b4;">
                 <h3 style="color: #333; margin-top: 0;">Message:</h3>
-                <p style="color: #555; line-height: 1.6; white-space: pre-wrap;">${message}</p>
+                <p style="color: #555; line-height: 1.6; white-space: pre-wrap;">${escapeHtml(sanitizedMessage)}</p>
               </div>
               
               <div style="margin-top: 20px; padding: 15px; background: #e8f5e9; border-radius: 8px;">
                 <p style="margin: 0; color: #2e7d32;">
                   <strong>Message ID:</strong> #${savedMessage.id}<br>
-                  <strong>Reply to:</strong> <a href="mailto:${email}" style="color: #a177b4;">${email}</a>
+                  <strong>Reply to:</strong> <a href="mailto:${escapeHtml(sanitizedEmail)}" style="color: #a177b4;">${escapeHtml(sanitizedEmail)}</a>
                 </p>
               </div>
             </div>
@@ -94,7 +116,7 @@ router.post('/', async (req, res) => {
       // Auto-reply to sender
       const userMailOptions = {
         from: process.env.EMAIL_USER,
-        to: email,
+        to: sanitizedEmail,
         subject: 'Thank you for contacting YogaGuru!',
         html: `
           <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
@@ -102,7 +124,7 @@ router.post('/', async (req, res) => {
               <h1 style="color: white; margin: 0; text-align: center;">YogaGuru</h1>
             </div>
             <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
-              <h2 style="color: #333;">Hello ${name}!</h2>
+              <h2 style="color: #333;">Hello ${escapeHtml(sanitizedName)}!</h2>
               
               <p style="color: #555; line-height: 1.6;">
                 Thank you for reaching out to us. We have received your message and will get back to you as soon as possible.
@@ -110,8 +132,8 @@ router.post('/', async (req, res) => {
               
               <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #a177b4;">
                 <h3 style="color: #333; margin-top: 0;">Your Message:</h3>
-                <p style="color: #888;"><strong>Subject:</strong> ${subject || 'No Subject'}</p>
-                <p style="color: #555; line-height: 1.6; white-space: pre-wrap;">${message}</p>
+                <p style="color: #888;"><strong>Subject:</strong> ${escapeHtml(sanitizedSubject)}</p>
+                <p style="color: #555; line-height: 1.6; white-space: pre-wrap;">${escapeHtml(sanitizedMessage)}</p>
               </div>
               
               <p style="color: #555; line-height: 1.6;">
@@ -131,7 +153,7 @@ router.post('/', async (req, res) => {
       };
 
       // Send emails
-      if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+      if (process.env.EMAIL_USER && process.env.EMAIL_PASS && ADMIN_EMAIL) {
         await transporter.sendMail(adminMailOptions);
         console.log('Admin notification email sent successfully');
         
@@ -140,14 +162,20 @@ router.post('/', async (req, res) => {
         
         emailSuccess = true;
       } else {
-        console.log('Email credentials not configured. Skipping email notifications.');
+        console.log('Email credentials/admin destination not configured. Skipping email notifications.');
       }
     } catch (emailError) {
       console.error('Email sending error:', emailError.message);
     }
 
     // Log message details for debugging
-    console.log('Contact form submission:', { name, email, subject, dbSuccess, emailSuccess });
+    console.log('Contact form submission:', {
+      name: sanitizedName,
+      email: sanitizedEmail,
+      subject: sanitizedSubject,
+      dbSuccess,
+      emailSuccess,
+    });
 
     // Always return success - message was received
     res.status(201).json({
@@ -164,7 +192,7 @@ router.post('/', async (req, res) => {
 });
 
 // Get all messages (admin only)
-router.get('/', async (req, res) => {
+router.get('/', authMiddleware, requireRole('admin'), async (req, res) => {
   try {
     const result = await pool.query(
       'SELECT * FROM contact_messages ORDER BY created_at DESC'
@@ -177,7 +205,7 @@ router.get('/', async (req, res) => {
 });
 
 // Get message by ID
-router.get('/:id', async (req, res) => {
+router.get('/:id', authMiddleware, requireRole('admin'), async (req, res) => {
   try {
     const result = await pool.query(
       'SELECT * FROM contact_messages WHERE id = $1',
@@ -196,9 +224,14 @@ router.get('/:id', async (req, res) => {
 });
 
 // Update message status
-router.patch('/:id', async (req, res) => {
+router.patch('/:id', authMiddleware, requireRole('admin'), async (req, res) => {
   try {
     const { status, admin_notes } = req.body;
+    const sanitizedNotes = sanitizeText(admin_notes, 2000);
+
+    if (status && !ALLOWED_MESSAGE_STATUSES.has(status)) {
+      return res.status(400).json({ error: 'Invalid message status' });
+    }
     
     const result = await pool.query(
       `UPDATE contact_messages 
@@ -207,7 +240,7 @@ router.patch('/:id', async (req, res) => {
            replied_at = CASE WHEN $1 = 'replied' THEN CURRENT_TIMESTAMP ELSE replied_at END
        WHERE id = $3
        RETURNING *`,
-      [status, admin_notes, req.params.id]
+      [status, sanitizedNotes, req.params.id]
     );
     
     if (result.rows.length === 0) {

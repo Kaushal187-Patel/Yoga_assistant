@@ -1,18 +1,23 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import Webcam from 'react-webcam';
 import * as tf from '@tensorflow/tfjs';
 import '@tensorflow/tfjs-backend-webgl';
 import * as poseDetection from '@tensorflow-models/pose-detection';
 import { FaArrowLeft, FaPlay, FaStop, FaCheckCircle, FaExclamationTriangle, FaInfoCircle } from 'react-icons/fa';
+import { SAMPLE_POSES } from '../data/samplePoses';
 import './PoseDetail.css';
 
 const PoseDetail = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { poseId } = useParams();
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
   const animationFrameRef = useRef(null);
+  const lastUiUpdateRef = useRef(0);
+  const lastFeedbackRef = useRef('');
+  const UI_UPDATE_INTERVAL_MS = 120;
   
   const [pose, setPose] = useState(null);
   const [isDetecting, setIsDetecting] = useState(false);
@@ -26,11 +31,16 @@ const PoseDetail = () => {
   useEffect(() => {
     if (location.state?.pose) {
       setPose(location.state.pose);
+      return;
+    }
+
+    const fallbackPose = SAMPLE_POSES.find((item) => String(item.id) === String(poseId));
+    if (fallbackPose) {
+      setPose(fallbackPose);
     } else {
-      // Fallback: navigate back if no pose data
       navigate('/pose-detection');
     }
-  }, [location.state, navigate]);
+  }, [location.state, navigate, poseId]);
 
   // Initialize pose detection model
   useEffect(() => {
@@ -130,6 +140,14 @@ const PoseDetail = () => {
 
     initModel();
   }, []);
+
+  useEffect(() => {
+    return () => {
+      if (detector && typeof detector.dispose === 'function') {
+        detector.dispose();
+      }
+    };
+  }, [detector]);
 
   const handleUserMedia = useCallback(() => {
     setHasPermission(true);
@@ -301,12 +319,13 @@ const PoseDetail = () => {
     });
   };
 
-  // Analyze pose and calculate accuracy - returns the calculated accuracy
+  // Analyze pose and calculate accuracy.
   const analyzePose = (keypoints) => {
     if (!keypoints || keypoints.length === 0) {
-      setAccuracy(0);
-      setFeedback(['No pose detected. Please ensure your full body is visible.']);
-      return 0;
+      return {
+        score: 0,
+        feedbackMessages: ['No pose detected. Please ensure your full body is visible.'],
+      };
     }
 
     // Count visible keypoints with higher confidence threshold
@@ -387,9 +406,6 @@ const PoseDetail = () => {
     const finalScore = Math.min(100, (visibilityScore * 0.3) + (poseScore * 0.7));
     const roundedScore = Math.round(finalScore);
     
-    // Update state
-    setAccuracy(roundedScore);
-
     if (finalScore >= 90) {
       if (feedbackMessages.length === 0) {
         feedbackMessages.push('Excellent pose! Perfect alignment - Green lines indicate correct form');
@@ -404,10 +420,10 @@ const PoseDetail = () => {
       }
     }
 
-    setFeedback(feedbackMessages);
-    
-    // Return the calculated accuracy for immediate use in drawing
-    return roundedScore;
+    return {
+      score: roundedScore,
+      feedbackMessages,
+    };
   };
 
   // Main detection loop
@@ -471,13 +487,33 @@ const PoseDetail = () => {
           
           // IMPORTANT: Calculate accuracy FIRST, then draw with that accuracy
           // This ensures the color matches the accuracy value
-          const calculatedAccuracy = analyzePose(keypoints);
+          const analysisResult = analyzePose(keypoints);
           
           // Draw pose with the calculated accuracy to ensure color matches
-          drawPose(keypoints, ctx, videoWidth, videoHeight, calculatedAccuracy);
+          drawPose(keypoints, ctx, videoWidth, videoHeight, analysisResult.score);
+
+          const now = performance.now();
+          if (now - lastUiUpdateRef.current >= UI_UPDATE_INTERVAL_MS) {
+            setAccuracy((prev) => (prev === analysisResult.score ? prev : analysisResult.score));
+            const nextFeedbackKey = analysisResult.feedbackMessages.join('|');
+            if (nextFeedbackKey !== lastFeedbackRef.current) {
+              setFeedback(analysisResult.feedbackMessages);
+              lastFeedbackRef.current = nextFeedbackKey;
+            }
+            lastUiUpdateRef.current = now;
+          }
         } else {
-          setAccuracy(0);
-          setFeedback(['No pose detected. Please ensure your full body is visible.']);
+          const noPoseMessage = ['No pose detected. Please ensure your full body is visible.'];
+          const now = performance.now();
+          if (now - lastUiUpdateRef.current >= UI_UPDATE_INTERVAL_MS) {
+            setAccuracy((prev) => (prev === 0 ? prev : 0));
+            const nextFeedbackKey = noPoseMessage.join('|');
+            if (nextFeedbackKey !== lastFeedbackRef.current) {
+              setFeedback(noPoseMessage);
+              lastFeedbackRef.current = nextFeedbackKey;
+            }
+            lastUiUpdateRef.current = now;
+          }
           
           // Clear canvas when no pose detected
           ctx.clearRect(0, 0, videoWidth, videoHeight);
@@ -520,6 +556,8 @@ const PoseDetail = () => {
       setFeedback(['Pose detection model is still loading. Please wait...']);
       return;
     }
+    lastUiUpdateRef.current = 0;
+    lastFeedbackRef.current = '';
     setIsDetecting(true);
     setFeedback([]);
   };

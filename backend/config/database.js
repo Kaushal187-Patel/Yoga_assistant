@@ -14,7 +14,6 @@ const pool = new Pool({
 // Handle connection errors
 pool.on('error', (err) => {
   console.error('Unexpected error on idle client', err);
-  process.exit(-1);
 });
 
 // Test database connection

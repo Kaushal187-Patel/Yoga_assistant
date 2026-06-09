@@ -115,15 +115,6 @@ router.get('/', (req, res) => {
   res.json(yogaPoses);
 });
 
-// Get pose by ID
-router.get('/:id', (req, res) => {
-  const pose = yogaPoses.find(p => p.id === parseInt(req.params.id));
-  if (!pose) {
-    return res.status(404).json({ error: 'Pose not found' });
-  }
-  res.json(pose);
-});
-
 // Get poses by difficulty
 router.get('/difficulty/:level', (req, res) => {
   const poses = yogaPoses.filter(
@@ -138,6 +129,15 @@ router.get('/category/:category', (req, res) => {
     p => p.category.toLowerCase() === req.params.category.toLowerCase()
   );
   res.json(poses);
+});
+
+// Get pose by ID
+router.get('/:id', (req, res) => {
+  const pose = yogaPoses.find(p => p.id === parseInt(req.params.id, 10));
+  if (!pose) {
+    return res.status(404).json({ error: 'Pose not found' });
+  }
+  res.json(pose);
 });
 
 // Submit pose detection result

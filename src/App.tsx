@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import Footer from "./components/Footer";
 import Navbar from "./components/Navbar";
+import ProtectedRoute from "./components/ProtectedRoute";
 import About from "./pages/About";
 import Auth from "./pages/Auth";
 import BasicWarmupExercises from "./pages/BasicWarmupExercises";
@@ -47,8 +48,8 @@ const App: React.FC = () => {
   useEffect(() => {
     const observerOptions = {
       root: null,
-      rootMargin: "-50px 0px",
-      threshold: 0.15,
+      rootMargin: "-20px 0px",
+      threshold: 0.01,
     };
 
     const intersectionObserver = new IntersectionObserver((entries) => {
@@ -57,10 +58,6 @@ const App: React.FC = () => {
           // Add visible class when entering viewport
           entry.target.classList.add("visible");
           entry.target.classList.remove("hidden");
-        } else {
-          // Remove visible class when leaving viewport (for re-animation)
-          entry.target.classList.remove("visible");
-          entry.target.classList.add("hidden");
         }
       });
     }, observerOptions);
@@ -74,6 +71,9 @@ const App: React.FC = () => {
       animateElements.forEach((el) => {
         if (!el.hasAttribute("data-observed")) {
           el.setAttribute("data-observed", "true");
+          // Fail-safe: keep content visible even if observer misses it.
+          el.classList.add("visible");
+          el.classList.remove("hidden");
           intersectionObserver.observe(el);
         }
       });
@@ -98,6 +98,96 @@ const App: React.FC = () => {
     };
   }, [location.pathname]);
 
+  // Global interaction motion effects across the website.
+  useEffect(() => {
+    const interactiveMotionSelectors = [
+      ".btn",
+      ".card",
+      ".pose-card",
+      ".pose-card-clickable",
+      ".tip-card",
+      ".team-card",
+      ".contact-card",
+      ".auth-card",
+      ".profile-card",
+      ".warmup-card",
+      ".tech-tag",
+      ".tab-btn",
+      ".subcategory-filter-btn",
+      ".insight-card",
+      ".accordion-item",
+      ".navbar-logo",
+      ".navbar-links a",
+      ".navbar-toggle",
+      ".social-btn",
+      ".feature-item",
+      ".additional-card",
+      ".requirement-card",
+      ".tech-card",
+      ".layer-card",
+      ".metric-card",
+      ".explanation-card",
+    ].join(", ");
+
+    const cleanupHandlers: Array<() => void> = [];
+
+    const runMotionClass = (target: HTMLElement, className: string) => {
+      target.classList.remove("motion-check-in", "motion-check-out");
+      // Force reflow so animation restarts every time.
+      void target.offsetWidth;
+      target.classList.add(className);
+    };
+
+    const bindTarget = (el: Element) => {
+      const target = el as HTMLElement;
+      if (target.dataset.motionBound === "true") {
+        return;
+      }
+
+      target.dataset.motionBound = "true";
+      target.classList.add("motion-target");
+      runMotionClass(target, "motion-check-in");
+
+      const handleEnter = () => {
+        runMotionClass(target, "motion-check-in");
+      };
+
+      const handleLeave = () => {
+        runMotionClass(target, "motion-check-out");
+      };
+
+      target.addEventListener("mouseenter", handleEnter);
+      target.addEventListener("mouseleave", handleLeave);
+
+      cleanupHandlers.push(() => {
+        target.removeEventListener("mouseenter", handleEnter);
+        target.removeEventListener("mouseleave", handleLeave);
+        target.classList.remove("motion-target", "motion-check-in", "motion-check-out");
+        delete target.dataset.motionBound;
+      });
+    };
+
+    const bindAllTargets = () => {
+      document.querySelectorAll(interactiveMotionSelectors).forEach(bindTarget);
+    };
+
+    bindAllTargets();
+
+    const motionObserver = new MutationObserver(() => {
+      bindAllTargets();
+    });
+
+    motionObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+
+    return () => {
+      motionObserver.disconnect();
+      cleanupHandlers.forEach((cleanup) => cleanup());
+    };
+  }, [location.pathname]);
+
   return (
     <>
       <Preloader isLoading={isLoading} />
@@ -113,7 +203,9 @@ const App: React.FC = () => {
             <Route path="/team" element={<Team />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/login" element={<Auth />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route element={<ProtectedRoute />}>
+              <Route path="/profile" element={<Profile />} />
+            </Route>
             <Route path="/category/:categoryId" element={<CategoryDetail />} />
             <Route
               path="/warmup-exercises"

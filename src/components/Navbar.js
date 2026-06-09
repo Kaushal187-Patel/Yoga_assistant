@@ -49,14 +49,22 @@ const Navbar = () => {
     { path: '/warmup-exercises', label: 'Warmup' },
     { path: '/project-info', label: 'Project Info' },
     { path: '/pose-detection', label: 'Pose Detection' },
-    { path: '/team', label: 'Team' },
-    { path: '/contact', label: 'Contact' },
+    // { path: '/team', label: 'Team' },
+    // { path: '/contact', label: 'Contact' },
   ];
 
   return (
     <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
       <div className="navbar-container">
-        <Link to="/" className="navbar-logo">
+        <Link
+          to="/"
+          className="navbar-logo"
+          onClick={() => {
+            if (location.pathname === '/') {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          }}
+        >
           <img 
             src="/yogaguru-icon-final.svg" 
             alt="YogaGuru Logo" 
@@ -81,6 +89,11 @@ const Navbar = () => {
                 <Link
                   to={link.path}
                   className={location.pathname === link.path ? 'active' : ''}
+                  onClick={() => {
+                    if (link.path === '/' && location.pathname === '/') {
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                  }}
                 >
                   {link.label}
                 </Link>
